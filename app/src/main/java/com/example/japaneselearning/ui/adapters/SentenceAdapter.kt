@@ -33,13 +33,22 @@ class SentenceAdapter(
         fun bind(sentence: Sentence) {
             binding.apply {
                 japaneseText.text = sentence.japanese
+                kanaText.text = sentence.kana
                 romajiText.text = sentence.romaji
                 englishText.text = sentence.english
                 categoryChip.text = sentence.category ?: "General"
                 
                 btnPlayAudio.setOnClickListener {
-                    // Play audio for this sentence
-                    // TODO: Implement audio playback
+                    val context = binding.root.context
+                    val audioManager = com.example.japaneselearning.utils.AudioManager(context)
+                    
+                    // Try to play audio file first, fallback to TTS
+                    if (!sentence.audioPath.isNullOrEmpty()) {
+                        audioManager.playAudio(sentence.audioPath)
+                    } else {
+                        // Use TTS if no audio file
+                        audioManager.speakJapanese(sentence.japanese)
+                    }
                 }
                 
                 btnEdit.setOnClickListener {

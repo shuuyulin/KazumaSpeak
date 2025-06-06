@@ -1,0 +1,98 @@
+package com.example.japaneselearning.ui.fragments
+
+import android.os.Bundle
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
+import androidx.fragment.app.Fragment
+import androidx.fragment.app.viewModels
+import androidx.lifecycle.Observer
+import androidx.recyclerview.widget.LinearLayoutManager
+import com.example.japaneselearning.databinding.FragmentCompareBinding
+import com.example.japaneselearning.ui.adapters.RecordingAdapter
+import com.example.japaneselearning.ui.viewmodels.PracticeViewModel
+import com.example.japaneselearning.data.entities.Recording
+
+class CompareFragment : Fragment() {
+    private var _binding: FragmentCompareBinding? = null
+    private val binding get() = _binding!!
+
+    private val viewModel: PracticeViewModel by viewModels()
+    private lateinit var recordingAdapter: RecordingAdapter
+
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View {
+        _binding = FragmentCompareBinding.inflate(inflater, container, false)
+        return binding.root
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+
+        setupRecyclerView()
+        setupObservers()
+        setupFilterChips()
+    }
+
+    private fun setupRecyclerView() {
+        recordingAdapter = RecordingAdapter()
+
+        binding.recyclerRecordings.apply {
+            layoutManager = LinearLayoutManager(context)
+            adapter = recordingAdapter
+        }
+    }
+
+    private fun setupObservers() {
+        viewModel.allRecordings.observe(viewLifecycleOwner, Observer { recordings ->
+            recordingAdapter.submitList(recordings)
+            updateOverallProgress(recordings)
+        })
+    }
+
+    private fun setupFilterChips() {
+        binding.chipAll.setOnCheckedChangeListener { _, isChecked ->
+            if (isChecked) filterRecordings("all")
+        }
+
+        binding.chipExcellent.setOnCheckedChangeListener { _, isChecked ->
+            if (isChecked) filterRecordings("excellent")
+        }
+
+        binding.chipGood.setOnCheckedChangeListener { _, isChecked ->
+            if (isChecked) filterRecordings("good")
+        }
+
+        binding.chipNeedsWork.setOnCheckedChangeListener { _, isChecked ->
+            if (isChecked) filterRecordings("needs_work")
+        }
+    }
+
+    private fun filterRecordings(filter: String) {
+        viewModel.allRecordings.value?.let { recordings ->
+            val filteredRecordings = when (filter) {
+                "excellent" -> recordings.filter { it.similarityScore >= 90f }
+                "good" -> recordings.filter { it.similarityScore in 70f..89f }
+                "needs_work" -> recordings.filter { it.similarityScore < 70f }
+                else -> recordings
+            }
+            recordingAdapter.submitList(filteredRecordings)
+        }
+    }
+
+    private fun updateOverallProgress(recordings: List<Recording>) {
+        if (recordings.isNotEmpty()) {
+            val averageScore = recordings.map { it.similarityScore }.average().toInt()
+            binding.overallProgress.progress = averageScore
+            binding.progressText.text = "Overall Progress: $averageScore%"
+        }
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
+    }
+}

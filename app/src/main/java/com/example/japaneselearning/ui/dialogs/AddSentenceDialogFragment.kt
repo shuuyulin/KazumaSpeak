@@ -96,12 +96,72 @@ class AddSentenceDialogFragment : DialogFragment() {
         setupUI()
         setupClickListeners()
         populateFields()
+        loadExistingCategories()
     }
     
     private fun setupUI() {
-        // Set up category chips
-        binding.categoryChips.setOnCheckedStateChangeListener { group, checkedIds ->
-            // Handle category selection
+        setupNewCategoryInput()
+    }
+    
+    private fun setupNewCategoryInput() {
+        binding.editNewCategory.setOnEditorActionListener { _, actionId, event ->
+            if (actionId == EditorInfo.IME_ACTION_DONE || 
+                (event?.keyCode == KeyEvent.KEYCODE_ENTER && event.action == KeyEvent.ACTION_DOWN)) {
+                addNewCategory()
+                true
+            } else {
+                false
+            }
+        }
+    }
+    
+    private fun addNewCategory() {
+        val categoryText = binding.editNewCategory.text.toString().trim()
+        if (categoryText.isNotEmpty() && !categories.contains(categoryText)) {
+            categories.add(categoryText)
+            addCategoryChip(categoryText)
+            binding.editNewCategory.text?.clear()
+        }
+    }
+    
+    private fun addCategoryChip(categoryText: String) {
+        val chip = Chip(requireContext()).apply {
+            text = categoryText
+            isCheckable = true
+            isCloseIconVisible = true
+            setOnCloseIconClickListener {
+                categories.remove(categoryText)
+                binding.dynamicCategoryChips.removeView(this)
+                if (selectedCategory == categoryText) {
+                    selectedCategory = null
+                }
+            }
+            setOnCheckedChangeListener { _, isChecked ->
+                if (isChecked) {
+                    // Uncheck other chips
+                    for (i in 0 until binding.dynamicCategoryChips.childCount) {
+                        val otherChip = binding.dynamicCategoryChips.getChildAt(i) as? Chip
+                        if (otherChip != this) {
+                            otherChip?.isChecked = false
+                        }
+                    }
+                    selectedCategory = categoryText
+                } else {
+                    selectedCategory = null
+                }
+            }
+        }
+        binding.dynamicCategoryChips.addView(chip)
+    }
+    
+    private fun loadExistingCategories() {
+        // Load common categories
+        val defaultCategories = listOf("Greetings", "Basic", "Conversation", "Travel", "Food")
+        defaultCategories.forEach { category ->
+            if (!categories.contains(category)) {
+                categories.add(category)
+                addCategoryChip(category)
+            }
         }
     }
     
@@ -202,7 +262,23 @@ class AddSentenceDialogFragment : DialogFragment() {
             binding.editKana.setText(sentence.kana)
             binding.editRomaji.setText(sentence.romaji)
             binding.editEnglish.setText(sentence.english)
-            binding.editCustomCategory.setText(sentence.category)
+            
+            // Set category
+            sentence.category?.let { category ->
+                if (!categories.contains(category)) {
+                    categories.add(category)
+                    addCategoryChip(category)
+                }
+                // Select the category chip
+                for (i in 0 until binding.dynamicCategoryChips.childCount) {
+                    val chip = binding.dynamicCategoryChips.getChildAt(i) as? Chip
+                    if (chip?.text == category) {
+                        chip.isChecked = true
+                        selectedCategory = category
+                        break
+                    }
+                }
+            }
         }
     }
     
@@ -283,44 +359,6 @@ class AddSentenceDialogFragment : DialogFragment() {
         dismiss()
     }
     
-    private fun getSelectedCategory(): String? {
-        return when (binding.categoryChips.checkedChipId) {
-            R.id.chip_greetings -> "Greetings"
-            R.id.chip_basic -> "Basic"
-            R.id.chip_conversation -> "Conversation"
-            else -> binding.editCustomCategory.text.toString().takeIf { it.isNotBlank() }
-        }
-    }
-    
-    private fun selectAudioSource(isNative: Boolean) {
-        if (isNative) {
-            binding.btnNativeAudio.backgroundTintList = 
-                context?.let { androidx.core.content.ContextCompat.getColorStateList(it, R.color.blue_primary) }
-            binding.btnTtsAudio.backgroundTintList = 
-                context?.let { androidx.core.content.ContextCompat.getColorStateList(it, R.color.background_secondary) }
-        } else {
-            binding.btnNativeAudio.backgroundTintList = 
-                context?.let { androidx.core.content.ContextCompat.getColorStateList(it, R.color.background_secondary) }
-            binding.btnTtsAudio.backgroundTintList = 
-                context?.let { androidx.core.content.ContextCompat.getColorStateList(it, R.color.blue_primary) }
-        }
-    }
-    
-    private fun playAudio() {
-        Toast.makeText(context, "Playing audio", Toast.LENGTH_SHORT).show()
-    }
-    
-    private fun recordAudio() {
-        Toast.makeText(context, "Recording audio", Toast.LENGTH_SHORT).show()
-    }
-    
-    private fun generateTTSAudio() {
-        val japanese = binding.editJapanese.text.toString()
-        if (japanese.isNotEmpty()) {
-            Toast.makeText(context, "Generating TTS audio for: $japanese", Toast.LENGTH_SHORT).show()
-        }
-    }
-    
     private fun autoGenerateRomaji() {
         val kana = binding.editKana.text.toString().trim()
         val japanese = binding.editJapanese.text.toString().trim()
@@ -330,7 +368,7 @@ class AddSentenceDialogFragment : DialogFragment() {
         if (textToRomanize.isNotEmpty()) {
             try {
                 val romaji = japaneseRomanizer.romanize(textToRomanize)
-            binding.editRomaji.setText(romaji)
+                binding.editRomaji.setText(romaji)
                 Toast.makeText(context, "Romaji generated from ${if (kana.isNotEmpty()) "kana" else "japanese"} text", Toast.LENGTH_SHORT).show()
             } catch (e: Exception) {
                 Toast.makeText(context, "Failed to generate romaji: ${e.message}", Toast.LENGTH_SHORT).show()

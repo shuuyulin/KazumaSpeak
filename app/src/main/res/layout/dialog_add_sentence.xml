@@ -37,12 +37,12 @@
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/btn_save"
-            android:layout_width="60dp"
-            android:layout_height="32dp"
+            android:layout_width="80dp"
+            android:layout_height="36dp"
             android:backgroundTint="@color/blue_primary"
             android:text="Save"
             android:textColor="@color/white"
-            android:textSize="16sp"
+            android:textSize="14sp"
             app:cornerRadius="16dp" />
 
     </LinearLayout>
@@ -95,6 +95,52 @@
 
                         <com.google.android.material.textfield.TextInputEditText
                             android:id="@+id/edit_japanese"
+                            android:layout_width="match_parent"
+                            android:layout_height="52dp"
+                            android:textSize="18sp" />
+
+                    </com.google.android.material.textfield.TextInputLayout>
+
+                </LinearLayout>
+
+            </androidx.cardview.widget.CardView>
+
+            <!-- Kana Text Section -->
+            <androidx.cardview.widget.CardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="16dp"
+                app:cardCornerRadius="16dp"
+                app:cardElevation="0dp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:padding="16dp">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="8dp"
+                        android:text="KANA TEXT (ALL HIRAGANA/KATAKANA)"
+                        android:textColor="@color/text_secondary"
+                        android:textSize="13sp"
+                        android:textStyle="bold" />
+
+                    <com.google.android.material.textfield.TextInputLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:hint="Enter kana version (ひらがな/カタカナ)"
+                        app:boxBackgroundColor="@color/background_light"
+                        app:boxCornerRadiusBottomEnd="8dp"
+                        app:boxCornerRadiusBottomStart="8dp"
+                        app:boxCornerRadiusTopEnd="8dp"
+                        app:boxCornerRadiusTopStart="8dp"
+                        app:boxStrokeColor="@color/stroke_color">
+
+                        <com.google.android.material.textfield.TextInputEditText
+                            android:id="@+id/edit_kana"
                             android:layout_width="match_parent"
                             android:layout_height="52dp"
                             android:textSize="18sp" />
@@ -228,73 +274,58 @@
                         android:orientation="horizontal">
 
                         <com.google.android.material.button.MaterialButton
-                            android:id="@+id/btn_native_audio"
+                            android:id="@+id/btn_tts_audio"
                             android:layout_width="0dp"
                             android:layout_height="36dp"
                             android:layout_marginEnd="8dp"
                             android:layout_weight="1"
                             android:backgroundTint="@color/blue_primary"
-                            android:text="Native Audio"
+                            android:text="TTS Audio"
                             android:textColor="@color/white"
                             android:textSize="14sp"
                             app:cornerRadius="18dp" />
 
                         <com.google.android.material.button.MaterialButton
-                            android:id="@+id/btn_tts_audio"
+                            android:id="@+id/btn_import_audio"
                             android:layout_width="0dp"
                             android:layout_height="36dp"
                             android:layout_marginStart="8dp"
                             android:layout_weight="1"
                             android:backgroundTint="@color/background_secondary"
-                            android:text="TTS Audio"
+                            android:text="Import File"
                             android:textColor="@color/text_secondary"
                             android:textSize="14sp"
-                            app:cornerRadius="18dp" />
+                            app:cornerRadius="18dp"
+                            app:icon="@drawable/ic_file_import"
+                            app:iconTint="@color/text_secondary" />
 
                     </LinearLayout>
 
-                    <!-- Audio Controls -->
+                    <!-- Audio Status -->
                     <LinearLayout
                         android:layout_width="match_parent"
-                        android:layout_height="36dp"
+                        android:layout_height="wrap_content"
+                        android:gravity="center_vertical"
                         android:orientation="horizontal">
 
-                        <com.google.android.material.button.MaterialButton
-                            android:id="@+id/btn_play"
-                            android:layout_width="120dp"
-                            android:layout_height="36dp"
-                            android:layout_marginEnd="8dp"
-                            android:backgroundTint="@color/green_primary"
-                            android:text="Play"
-                            android:textColor="@color/white"
-                            android:textSize="14sp"
-                            app:cornerRadius="18dp"
-                            app:icon="@drawable/ic_play"
-                            app:iconTint="@color/white" />
+                        <TextView
+                            android:id="@+id/audio_status"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:text="No audio selected"
+                            android:textColor="@color/text_secondary"
+                            android:textSize="14sp" />
 
                         <com.google.android.material.button.MaterialButton
-                            android:id="@+id/btn_record"
-                            android:layout_width="120dp"
-                            android:layout_height="36dp"
-                            android:layout_marginStart="8dp"
-                            android:layout_marginEnd="8dp"
-                            android:backgroundTint="@color/red_primary"
-                            android:text="Record"
-                            android:textColor="@color/white"
-                            android:textSize="14sp"
-                            app:cornerRadius="18dp"
-                            app:icon="@drawable/ic_record"
-                            app:iconTint="@color/white" />
-
-                        <com.google.android.material.button.MaterialButton
-                            android:id="@+id/btn_speaker"
+                            android:id="@+id/btn_preview_audio"
                             style="@style/Widget.Material3.Button.IconButton"
                             android:layout_width="36dp"
                             android:layout_height="36dp"
-                            android:layout_marginStart="8dp"
-                            android:backgroundTint="@color/background_secondary"
-                            app:icon="@drawable/ic_speaker"
-                            app:iconTint="@color/text_secondary" />
+                            android:backgroundTint="@color/green_primary"
+                            android:visibility="gone"
+                            app:icon="@drawable/ic_play"
+                            app:iconTint="@color/white" />
 
                     </LinearLayout>
 
@@ -320,72 +351,38 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginBottom="8dp"
-                        android:text="CATEGORY (OPTIONAL)"
+                        android:text="CATEGORIES"
                         android:textColor="@color/text_secondary"
                         android:textSize="13sp"
                         android:textStyle="bold" />
 
+                    <!-- Dynamic Category Chips -->
                     <com.google.android.material.chip.ChipGroup
-                        android:id="@+id/category_chips"
+                        android:id="@+id/dynamic_category_chips"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginBottom="8dp"
-                        app:singleSelection="true">
+                        android:layout_marginBottom="8dp" />
 
-                        <com.google.android.material.chip.Chip
-                            android:id="@+id/chip_greetings"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:checkable="true"
-                            android:checked="true"
-                            android:text="Greetings"
-                            app:chipBackgroundColor="@color/chip_background"
-                            app:chipStrokeColor="@color/blue_primary"
-                            app:chipStrokeWidth="0dp" />
-
-                        <com.google.android.material.chip.Chip
-                            android:id="@+id/chip_basic"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:checkable="true"
-                            android:text="Basic"
-                            app:chipBackgroundColor="@color/chip_background"
-                            app:chipStrokeColor="@color/blue_primary"
-                            app:chipStrokeWidth="0dp" />
-
-                        <com.google.android.material.chip.Chip
-                            android:id="@+id/chip_conversation"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:checkable="true"
-                            android:text="Conversation"
-                            app:chipBackgroundColor="@color/chip_background"
-                            app:chipStrokeColor="@color/blue_primary"
-                            app:chipStrokeWidth="0dp" />
-
-                        <com.google.android.material.chip.Chip
-                            android:id="@+id/chip_add"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="Add"
-                            app:chipBackgroundColor="@color/chip_background"
-                            app:chipIcon="@drawable/ic_add"
-                            app:chipIconTint="@color/text_secondary"
-                            app:chipStrokeColor="@color/text_secondary"
-                            app:chipStrokeWidth="1dp" />
-
-                    </com.google.android.material.chip.ChipGroup>
-
+                    <!-- Add Category Input -->
                     <com.google.android.material.textfield.TextInputLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:hint="Add custom category..."
-                        app:boxBackgroundMode="none">
+                        android:hint="Add new category..."
+                        app:boxBackgroundMode="outline"
+                        app:boxCornerRadiusBottomEnd="8dp"
+                        app:boxCornerRadiusBottomStart="8dp"
+                        app:boxCornerRadiusTopEnd="8dp"
+                        app:boxCornerRadiusTopStart="8dp"
+                        app:endIconMode="custom"
+                        app:endIconDrawable="@drawable/ic_add">
 
                         <com.google.android.material.textfield.TextInputEditText
-                            android:id="@+id/edit_custom_category"
+                            android:id="@+id/edit_new_category"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
+                            android:imeOptions="actionDone"
+                            android:inputType="text"
+                            android:maxLines="1"
                             android:textSize="14sp" />
 
                     </com.google.android.material.textfield.TextInputLayout>
@@ -409,30 +406,13 @@
                     android:padding="16dp">
 
                     <com.google.android.material.button.MaterialButton
-                        android:id="@+id/btn_generate_tts"
-                        android:layout_width="0dp"
-                        android:layout_height="28dp"
-                        android:layout_marginEnd="8dp"
-                        android:layout_weight="1"
-                        android:backgroundTint="@color/orange_primary"
-                        android:text="Generate Audio"
-                        android:textColor="@color/white"
-                        android:textSize="13sp"
-                        app:cornerRadius="14dp"
-                        app:icon="@drawable/ic_tts"
-                        app:iconSize="16dp"
-                        app:iconTint="@color/white" />
-
-                    <com.google.android.material.button.MaterialButton
                         android:id="@+id/btn_auto_romaji"
-                        android:layout_width="0dp"
-                        android:layout_height="28dp"
-                        android:layout_marginStart="8dp"
-                        android:layout_weight="1"
+                        android:layout_width="match_parent"
+                        android:layout_height="36dp"
                         android:backgroundTint="@color/green_primary"
-                        android:text="Auto Romaji"
+                        android:text="Auto Generate Romaji"
                         android:textColor="@color/white"
-                        android:textSize="13sp"
+                        android:textSize="14sp"
                         app:cornerRadius="14dp" />
 
                 </LinearLayout>

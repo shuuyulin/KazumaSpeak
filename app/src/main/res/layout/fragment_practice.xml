@@ -212,12 +212,13 @@
 
         <com.google.android.material.floatingactionbutton.FloatingActionButton
             android:id="@+id/btn_skip"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
             android:layout_marginEnd="32dp"
             android:backgroundTint="@color/background_secondary"
             android:src="@drawable/ic_skip"
-            app:tint="@color/text_secondary" />
+            app:tint="@color/text_secondary"
+            app:fabSize="normal" />
 
         <com.google.android.material.floatingactionbutton.FloatingActionButton
             android:id="@+id/btn_next"
@@ -309,11 +310,12 @@
                 <com.google.android.material.chip.Chip
                     android:id="@+id/chip_japanese"
                     android:layout_width="wrap_content"
-                    android:layout_height="36dp"
-                    android:layout_marginEnd="12dp"
+                    android:layout_height="32dp"
+                    android:layout_marginEnd="8dp"
                     android:checkable="true"
                     android:checked="true"
                     android:text="Japanese"
+                    android:textSize="12sp"
                     app:chipBackgroundColor="@color/chip_background"
                     app:chipStrokeColor="@color/blue_primary"
                     app:chipStrokeWidth="0dp" />
@@ -321,10 +323,11 @@
                 <com.google.android.material.chip.Chip
                     android:id="@+id/chip_romaji"
                     android:layout_width="wrap_content"
-                    android:layout_height="36dp"
-                    android:layout_marginEnd="12dp"
+                    android:layout_height="32dp"
+                    android:layout_marginEnd="8dp"
                     android:checkable="true"
-                    android:text="Romaji"
+                    android:text="ROM"
+                    android:textSize="12sp"
                     app:chipBackgroundColor="@color/chip_background"
                     app:chipStrokeColor="@color/blue_primary"
                     app:chipStrokeWidth="0dp" />
@@ -332,11 +335,12 @@
                 <com.google.android.material.chip.Chip
                     android:id="@+id/chip_audio"
                     android:layout_width="wrap_content"
-                    android:layout_height="36dp"
-                    android:layout_marginEnd="12dp"
+                    android:layout_height="32dp"
+                    android:layout_marginEnd="8dp"
                     android:checkable="true"
                     android:checked="true"
                     android:text="Audio"
+                    android:textSize="12sp"
                     app:chipBackgroundColor="@color/chip_background"
                     app:chipStrokeColor="@color/blue_primary"
                     app:chipStrokeWidth="0dp" />
@@ -344,9 +348,10 @@
                 <com.google.android.material.chip.Chip
                     android:id="@+id/chip_auto_play"
                     android:layout_width="wrap_content"
-                    android:layout_height="36dp"
+                    android:layout_height="32dp"
                     android:checkable="true"
-                    android:text="Auto Play"
+                    android:text="Auto"
+                    android:textSize="12sp"
                     app:chipBackgroundColor="@color/chip_background"
                     app:chipStrokeColor="@color/blue_primary"
                     app:chipStrokeWidth="0dp" />

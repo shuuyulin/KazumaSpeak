@@ -4,10 +4,10 @@
     <color name="white">#FFFFFFFF</color>
     
     <!-- Primary Colors -->
-    <color name="blue_primary">#FF007AFF</color>
-    <color name="green_primary">#FF34C759</color>
-    <color name="red_primary">#FFFF3B30</color>
-    <color name="orange_primary">#FFFF9500</color>
+    <!-- <color name="blue_primary">#FF007AFF</color> -->
+    <!-- <color name="green_primary">#FF34C759</color> -->
+    <!-- <color name="red_primary">#FFFF3B30</color> -->
+    <!-- <color name="orange_primary">#FFFF9500</color> -->
     
     <!-- Light Colors -->
     <color name="green_light">#FFE8F5E8</color>
@@ -27,4 +27,14 @@
     <color name="stroke_color">#FFE5E5E7</color>
     <color name="chip_background">#FFF2F2F7</color>
     <color name="switch_track">#FFE5E5E7</color>
+
+    <color name="red_primary">#F44336</color>
+    <color name="orange_primary">#FF9800</color>
+    <color name="green_primary">#4CAF50</color>
+    <color name="blue_primary">#2196F3</color>
+    <!-- <color name="background_light">#F5F5F5</color> -->
+    <!-- <color name="background_secondary">#E0E0E0</color> -->
+    <!-- <color name="text_primary">#212121</color> -->
+    <!-- <color name="text_secondary">#757575</color> -->
+    <color name="background_primary">#FFFFFF</color>
 </resources>

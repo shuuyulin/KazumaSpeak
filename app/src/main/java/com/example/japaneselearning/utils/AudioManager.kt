@@ -39,27 +39,68 @@ class AudioManager(private val context: Context) {
         }
     }
     
-    fun playAudio(audioPath: String) {
-        try {
+    fun playAudio(audioPath: String): Boolean {
+        return try {
             stopAudio() // Stop any currently playing audio
             
+            // Check if file exists
             val file = File(audioPath)
             if (!file.exists()) {
                 Log.e(TAG, "Audio file does not exist: $audioPath")
-                return
+                return false
             }
             
+            // Check if file is readable and has content
+            if (!file.canRead() || file.length() == 0L) {
+                Log.e(TAG, "Audio file is not readable or empty: $audioPath")
+                return false
+            }
+            
+            Log.d(TAG, "Attempting to play audio: $audioPath")
+            
             mediaPlayer = MediaPlayer().apply {
-                setDataSource(audioPath)
-                prepare()
-                start()
-                setOnCompletionListener {
-                    Log.d(TAG, "Audio playback completed")
+                try {
+                    setDataSource(audioPath)
+                    
+                    // Use prepareAsync instead of prepare to avoid blocking UI
+                    setOnPreparedListener { player ->
+                        Log.d(TAG, "MediaPlayer prepared, starting playback")
+                        player.start()
+                    }
+                    
+                    setOnCompletionListener { player ->
+                        Log.d(TAG, "Audio playback completed")
+                        player.release()
+                        mediaPlayer = null
+                    }
+                    
+                    setOnErrorListener { player, what, extra ->
+                        Log.e(TAG, "MediaPlayer error: what=$what, extra=$extra")
+                        player.release()
+                        mediaPlayer = null
+                        false // Return false to trigger onCompletion
+                    }
+                    
+                    prepareAsync() // Use async prepare
+                    
+                } catch (e: IOException) {
+                    Log.e(TAG, "IOException setting data source: ${e.message}")
+                    release()
+                    mediaPlayer = null
+                    return false
+                } catch (e: IllegalStateException) {
+                    Log.e(TAG, "IllegalStateException in MediaPlayer: ${e.message}")
+                    release()
+                    mediaPlayer = null
+                    return false
                 }
             }
-            Log.d(TAG, "Playing audio: $audioPath")
-        } catch (e: IOException) {
-            Log.e(TAG, "Error playing audio: ${e.message}")
+            
+            true
+        } catch (e: Exception) {
+            Log.e(TAG, "Unexpected error playing audio: ${e.message}", e)
+            stopAudio()
+            false
         }
     }
     
@@ -77,18 +118,28 @@ class AudioManager(private val context: Context) {
         mediaPlayer = null
     }
     
-    fun speakJapanese(text: String) {
-        textToSpeech?.let { tts ->
-            if (tts.isSpeaking) {
-                tts.stop()
+    fun speakJapanese(text: String): Boolean {
+        return try {
+            textToSpeech?.let { tts ->
+                if (tts.isSpeaking) {
+                    tts.stop()
+                }
+                val result = tts.speak(text, TextToSpeech.QUEUE_FLUSH, null, null)
+                if (result == TextToSpeech.ERROR) {
+                    Log.e(TAG, "Error speaking text: $text")
+                    false
+                } else {
+                    Log.d(TAG, "Speaking: $text")
+                    true
+                }
+            } ?: run {
+                Log.e(TAG, "TTS not initialized")
+                false
             }
-            val result = tts.speak(text, TextToSpeech.QUEUE_FLUSH, null, null)
-            if (result == TextToSpeech.ERROR) {
-                Log.e(TAG, "Error speaking text: $text")
-            } else {
-                Log.d(TAG, "Speaking: $text")
-            }
-        } ?: Log.e(TAG, "TTS not initialized")
+        } catch (e: Exception) {
+            Log.e(TAG, "Error in speakJapanese: ${e.message}", e)
+            false
+        }
     }
     
     fun startRecording(): File? {

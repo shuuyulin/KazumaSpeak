@@ -4,6 +4,7 @@ import android.app.Activity
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
+import android.util.Log
 import android.view.KeyEvent
 import android.view.LayoutInflater
 import android.view.View
@@ -303,15 +304,7 @@ class AddSentenceDialogFragment : DialogFragment() {
         // Auto-generate missing fields if needed
         val finalKana = if (kana.isEmpty()) japanese else kana
         val finalRomaji = if (romaji.isEmpty()) {
-            // Use API to generate romaji if empty
-            lifecycleScope.launch {
-                try {
-                    japaneseTextConverter.convertKanaToRomaji(finalKana)
-                } catch (e: Exception) {
-                    finalKana.lowercase() // Fallback
-                }
-            }
-            finalKana.lowercase() // Temporary fallback for immediate save
+            finalKana.lowercase() // Simple fallback
         } else romaji
         
         var audioPath: String? = null
@@ -319,12 +312,18 @@ class AddSentenceDialogFragment : DialogFragment() {
         // Handle audio based on selected source
         when (audioSourceType) {
             AudioSourceType.TTS -> {
-                // Generate TTS audio file
-                val ttsFile = audioManager.generateTTSAudio(japanese)
-                audioPath = ttsFile?.absolutePath
-                if (audioPath == null) {
-                    Toast.makeText(context, "Failed to generate TTS audio", Toast.LENGTH_SHORT).show()
-                    return
+                try {
+                    // Generate TTS audio file
+                    val ttsFile = audioManager.generateTTSAudio(japanese)
+                    audioPath = ttsFile?.absolutePath
+                    
+                    if (audioPath == null) {
+                        Log.w("AddSentenceDialog", "TTS audio generation failed, but continuing to save")
+                        // Don't return - save sentence without audio
+                    }
+                } catch (e: Exception) {
+                    Log.e("AddSentenceDialog", "Error generating TTS audio: ${e.message}")
+                    // Continue without audio
                 }
             }
             AudioSourceType.IMPORTED_FILE -> {
@@ -334,14 +333,15 @@ class AddSentenceDialogFragment : DialogFragment() {
                         val inputStream = requireContext().contentResolver.openInputStream(uri)
                         val audioFile = audioManager.createAudioFile("imported_${System.currentTimeMillis()}")
                         inputStream?.use { input ->
-                            FileOutputStream(audioFile).use { output ->
+                            java.io.FileOutputStream(audioFile).use { output ->
                                 input.copyTo(output)
                             }
                         }
                         audioPath = audioFile.absolutePath
                     } catch (e: Exception) {
-                        Toast.makeText(context, "Failed to save audio file: ${e.message}", Toast.LENGTH_SHORT).show()
-                        return
+                        Log.e("AddSentenceDialog", "Error saving imported audio: ${e.message}")
+                        Toast.makeText(context, "Audio import failed, saving sentence without audio", Toast.LENGTH_SHORT).show()
+                        // Continue without audio
                     }
                 }
             }

@@ -3,6 +3,7 @@ package com.example.japaneselearning.ui.adapters
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import android.util.Log
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
@@ -42,13 +43,38 @@ class SentenceAdapter(
                     val context = binding.root.context
                     val audioManager = com.example.japaneselearning.utils.AudioManager(context)
                     
-                    // Try to play audio file first, fallback to TTS
-                    if (!sentence.audioPath.isNullOrEmpty()) {
-                        audioManager.playAudio(sentence.audioPath)
-                    } else {
-                        // Use TTS with the kana version if available, otherwise japanese
-                        val textToSpeak = if (sentence.kana.isNotEmpty()) sentence.kana else sentence.japanese
-                        audioManager.speakJapanese(textToSpeak)
+                    try {
+                        var audioPlayed = false
+                        
+                        // Try to play audio file first
+                        if (!sentence.audioPath.isNullOrEmpty()) {
+                            Log.d("SentenceAdapter", "Attempting to play audio file: ${sentence.audioPath}")
+                            audioPlayed = audioManager.playAudio(sentence.audioPath)
+                        }
+                        
+                        // Fallback to TTS if no audio file or audio file failed
+                        if (!audioPlayed) {
+                            Log.d("SentenceAdapter", "Audio file failed, using TTS")
+                            // Use kana version if available, otherwise japanese
+                            val textToSpeak = if (sentence.kana.isNotEmpty()) sentence.kana else sentence.japanese
+                            val ttsSuccess = audioManager.speakJapanese(textToSpeak)
+                            
+                            if (!ttsSuccess) {
+                                // Show error message if both audio file and TTS fail
+                                android.widget.Toast.makeText(
+                                    context, 
+                                    "Unable to play audio", 
+                                    android.widget.Toast.LENGTH_SHORT
+                                ).show()
+                            }
+                        }
+                    } catch (e: Exception) {
+                        Log.e("SentenceAdapter", "Error in play audio: ${e.message}", e)
+                        android.widget.Toast.makeText(
+                            context, 
+                            "Audio playback failed", 
+                            android.widget.Toast.LENGTH_SHORT
+                        ).show()
                     }
                 }
                 

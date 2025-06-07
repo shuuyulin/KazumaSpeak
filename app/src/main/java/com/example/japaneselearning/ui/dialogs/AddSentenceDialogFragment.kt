@@ -1,4 +1,3 @@
-// app/src/main/java/com/example/japaneselearning/ui/dialogs/AddSentenceDialogFragment.kt
 package com.example.japaneselearning.ui.dialogs
 
 import android.app.Activity
@@ -14,13 +13,17 @@ import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.lifecycleScope
 import com.example.japaneselearning.R
 import com.example.japaneselearning.data.entities.Sentence
 import com.example.japaneselearning.databinding.DialogAddSentenceBinding
 import com.example.japaneselearning.ui.viewmodels.SentenceViewModel
 import com.example.japaneselearning.utils.AudioManager
-import com.example.japaneselearning.utils.SimpleJapaneseRomanizer
+import com.example.japaneselearning.utils.JapaneseTextConverter
+import com.example.japaneselearning.utils.NetworkUtils
+import com.example.japaneselearning.utils.ConversionResult
 import com.google.android.material.chip.Chip
+import kotlinx.coroutines.launch
 import java.io.File
 import java.io.FileOutputStream
 
@@ -31,7 +34,7 @@ class AddSentenceDialogFragment : DialogFragment() {
     private val viewModel: SentenceViewModel by viewModels()
     private var editingSentence: Sentence? = null
     private lateinit var audioManager: AudioManager
-    private lateinit var japaneseRomanizer: SimpleJapaneseRomanizer
+    private lateinit var japaneseTextConverter: JapaneseTextConverter
     
     private var selectedAudioUri: Uri? = null
     private var audioSourceType: AudioSourceType = AudioSourceType.TTS
@@ -91,7 +94,7 @@ class AddSentenceDialogFragment : DialogFragment() {
         super.onViewCreated(view, savedInstanceState)
         
         audioManager = AudioManager(requireContext())
-        japaneseRomanizer = SimpleJapaneseRomanizer()
+        japaneseTextConverter = JapaneseTextConverter(requireContext())
         
         setupUI()
         setupClickListeners()
@@ -184,6 +187,10 @@ class AddSentenceDialogFragment : DialogFragment() {
         
         binding.btnPreviewAudio.setOnClickListener {
             previewAudio()
+        }
+        
+        binding.btnGenerateKana.setOnClickListener {
+            generateKana()
         }
         
         binding.btnAutoRomaji.setOnClickListener {
@@ -293,12 +300,20 @@ class AddSentenceDialogFragment : DialogFragment() {
             return
         }
         
-        // Auto-generate kana and romaji if empty
-        val finalKana = if (kana.isEmpty()) japanese else kana // Default to japanese if kana not provided
+        // Auto-generate missing fields if needed
+        val finalKana = if (kana.isEmpty()) japanese else kana
         val finalRomaji = if (romaji.isEmpty()) {
-            japaneseRomanizer.romanize(finalKana)
+            // Use API to generate romaji if empty
+            lifecycleScope.launch {
+                try {
+                    japaneseTextConverter.convertKanaToRomaji(finalKana)
+                } catch (e: Exception) {
+                    finalKana.lowercase() // Fallback
+                }
+            }
+            finalKana.lowercase() // Temporary fallback for immediate save
         } else romaji
-
+        
         var audioPath: String? = null
         
         // Handle audio based on selected source
@@ -359,22 +374,82 @@ class AddSentenceDialogFragment : DialogFragment() {
         dismiss()
     }
     
-    private fun autoGenerateRomaji() {
-        val kana = binding.editKana.text.toString().trim()
+    private fun generateKana() {
         val japanese = binding.editJapanese.text.toString().trim()
         
-        val textToRomanize = if (kana.isNotEmpty()) kana else japanese
+        if (japanese.isEmpty()) {
+            Toast.makeText(context, "Enter Japanese text with kanji first", Toast.LENGTH_SHORT).show()
+            return
+        }
         
-        if (textToRomanize.isNotEmpty()) {
+        // Show loading state
+        binding.btnGenerateKana.text = "..."
+        binding.btnGenerateKana.isEnabled = false
+        
+        try {
+            val result = japaneseTextConverter.convertKanjiToKana(japanese)
+            
+            when (result) {
+                is ConversionResult.Success -> {
+                    binding.editKana.setText(result.result)
+                    Toast.makeText(context, "Kana generated successfully", Toast.LENGTH_SHORT).show()
+                }
+                is ConversionResult.PartialSuccess -> {
+                    binding.editKana.setText(result.result)
+                    Toast.makeText(context, result.message, Toast.LENGTH_LONG).show()
+                }
+                is ConversionResult.Error -> {
+                    Toast.makeText(context, result.message, Toast.LENGTH_SHORT).show()
+                }
+            }
+        } catch (e: Exception) {
+            Toast.makeText(context, "Failed to generate kana: ${e.message}", Toast.LENGTH_SHORT).show()
+        } finally {
+            binding.btnGenerateKana.text = "Generate"
+            binding.btnGenerateKana.isEnabled = true
+        }
+    }
+    
+    private fun autoGenerateRomaji() {
+        val kana = binding.editKana.text.toString().trim()
+        
+        if (kana.isEmpty()) {
+            Toast.makeText(context, "Generate kana text first, or enter kana manually", Toast.LENGTH_SHORT).show()
+            return
+        }
+        
+        if (!NetworkUtils.isNetworkAvailable(requireContext())) {
+            Toast.makeText(context, "Network connection required for romaji generation", Toast.LENGTH_SHORT).show()
+            return
+        }
+        
+        // Show loading state
+        binding.btnAutoRomaji.text = "..."
+        binding.btnAutoRomaji.isEnabled = false
+        
+        lifecycleScope.launch {
             try {
-                val romaji = japaneseRomanizer.romanize(textToRomanize)
-                binding.editRomaji.setText(romaji)
-                Toast.makeText(context, "Romaji generated from ${if (kana.isNotEmpty()) "kana" else "japanese"} text", Toast.LENGTH_SHORT).show()
+                val result = japaneseTextConverter.convertKanaToRomaji(kana)
+                
+                when (result) {
+                    is ConversionResult.Success -> {
+                        binding.editRomaji.setText(result.result)
+                        Toast.makeText(context, "Romaji generated successfully", Toast.LENGTH_SHORT).show()
+                    }
+                    is ConversionResult.PartialSuccess -> {
+                        binding.editRomaji.setText(result.result)
+                        Toast.makeText(context, result.message, Toast.LENGTH_LONG).show()
+                    }
+                    is ConversionResult.Error -> {
+                        Toast.makeText(context, result.message, Toast.LENGTH_SHORT).show()
+                    }
+                }
             } catch (e: Exception) {
                 Toast.makeText(context, "Failed to generate romaji: ${e.message}", Toast.LENGTH_SHORT).show()
+            } finally {
+                binding.btnAutoRomaji.text = "Generate"
+                binding.btnAutoRomaji.isEnabled = true
             }
-        } else {
-            Toast.makeText(context, "Enter Japanese or Kana text first", Toast.LENGTH_SHORT).show()
         }
     }
     

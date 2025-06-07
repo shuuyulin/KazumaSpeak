@@ -54,4 +54,10 @@ dependencies {
     implementation(libs.kotlinx.coroutines.android)
     
     ksp(libs.androidx.room.compiler)  // Changed from kapt to ksp
+
+    // Add these for API integration
+    implementation(libs.retrofit)
+    implementation(libs.converter.gson)
+    implementation(libs.logging.interceptor)
+    implementation(libs.okhttp)
 }

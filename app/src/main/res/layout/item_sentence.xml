@@ -30,37 +30,37 @@
                     android:id="@+id/japanese_text"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="こんにちは、元気ですか？"
+                    android:text="今日は良い天気ですね"
                     android:textColor="@color/text_primary"
-                    android:textSize="18sp"
+                    android:textSize="20sp"
                     android:textStyle="bold" />
-
-                <TextView
-                    android:id="@+id/romaji_text"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="4dp"
-                    android:text="Konnichiwa, genki desu ka?"
-                    android:textColor="@color/text_secondary"
-                    android:textSize="14sp" />
 
                 <TextView
                     android:id="@+id/kana_text"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="2dp"
+                    android:layout_marginTop="4dp"
                     android:text="きょうはいいてんきですね"
                     android:textColor="@color/text_secondary"
-                    android:textSize="14sp"
+                    android:textSize="16sp"
                     android:textStyle="italic" />
-                    
+
+                <TextView
+                    android:id="@+id/romaji_text"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="2dp"
+                    android:text="kyou wa ii tenki desu ne"
+                    android:textColor="@color/text_secondary"
+                    android:textSize="14sp" />
+
                 <TextView
                     android:id="@+id/english_text"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="8dp"
-                    android:text="Hello, how are you?"
-                    android:textColor="@color/text_primary"
+                    android:text="Today is nice weather, isn't it?"
+                    android:textColor="@color/blue_primary"
                     android:textSize="16sp" />
 
             </LinearLayout>

@@ -59,7 +59,7 @@
             android:layout_height="wrap_content"
             android:orientation="vertical">
 
-            <!-- Japanese Text Section -->
+            <!-- Japanese Text with Kanji Section (NO BUTTON) -->
             <androidx.cardview.widget.CardView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -74,10 +74,10 @@
                     android:padding="16dp">
 
                     <TextView
-                        android:layout_width="wrap_content"
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginBottom="8dp"
-                        android:text="JAPANESE TEXT"
+                        android:text="JAPANESE TEXT (WITH KANJI)"
                         android:textColor="@color/text_secondary"
                         android:textSize="13sp"
                         android:textStyle="bold" />
@@ -85,7 +85,7 @@
                     <com.google.android.material.textfield.TextInputLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:hint="Enter Japanese text (kana/kanji)"
+                        android:hint="Enter Japanese with kanji (今日は良い天気ですね)"
                         app:boxBackgroundColor="@color/background_light"
                         app:boxCornerRadiusBottomEnd="8dp"
                         app:boxCornerRadiusBottomStart="8dp"
@@ -105,7 +105,7 @@
 
             </androidx.cardview.widget.CardView>
 
-            <!-- Kana Text Section -->
+            <!-- Japanese Text without Kanji (Kana only) Section (WITH GENERATE BUTTON) -->
             <androidx.cardview.widget.CardView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -119,19 +119,39 @@
                     android:orientation="vertical"
                     android:padding="16dp">
 
-                    <TextView
-                        android:layout_width="wrap_content"
+                    <LinearLayout
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginBottom="8dp"
-                        android:text="KANA TEXT (ALL HIRAGANA/KATAKANA)"
-                        android:textColor="@color/text_secondary"
-                        android:textSize="13sp"
-                        android:textStyle="bold" />
+                        android:orientation="horizontal"
+                        android:gravity="center_vertical"
+                        android:layout_marginBottom="8dp">
+
+                        <TextView
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:text="JAPANESE TEXT (KANA ONLY - NO KANJI)"
+                            android:textColor="@color/text_secondary"
+                            android:textSize="13sp"
+                            android:textStyle="bold" />
+
+                        <com.google.android.material.button.MaterialButton
+                            android:id="@+id/btn_generate_kana"
+                            android:layout_width="wrap_content"
+                            android:layout_height="32dp"
+                            android:backgroundTint="@color/orange_primary"
+                            android:text="Generate"
+                            android:textColor="@color/white"
+                            android:textSize="11sp"
+                            app:cornerRadius="16dp"
+                            android:minWidth="70dp" />
+
+                    </LinearLayout>
 
                     <com.google.android.material.textfield.TextInputLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:hint="Enter kana version (ひらがな/カタカナ)"
+                        android:hint="Kana version (きょうはいいてんきですね)"
                         app:boxBackgroundColor="@color/background_light"
                         app:boxCornerRadiusBottomEnd="8dp"
                         app:boxCornerRadiusBottomStart="8dp"
@@ -151,7 +171,7 @@
 
             </androidx.cardview.widget.CardView>
 
-            <!-- Romaji Section -->
+            <!-- Romaji Text Section (WITH GENERATE BUTTON) -->
             <androidx.cardview.widget.CardView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -165,19 +185,39 @@
                     android:orientation="vertical"
                     android:padding="16dp">
 
-                    <TextView
-                        android:layout_width="wrap_content"
+                    <LinearLayout
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginBottom="8dp"
-                        android:text="ROMAJI"
-                        android:textColor="@color/text_secondary"
-                        android:textSize="13sp"
-                        android:textStyle="bold" />
+                        android:orientation="horizontal"
+                        android:gravity="center_vertical"
+                        android:layout_marginBottom="8dp">
+
+                        <TextView
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:text="ROMAJI TEXT"
+                            android:textColor="@color/text_secondary"
+                            android:textSize="13sp"
+                            android:textStyle="bold" />
+
+                        <com.google.android.material.button.MaterialButton
+                            android:id="@+id/btn_auto_romaji"
+                            android:layout_width="wrap_content"
+                            android:layout_height="32dp"
+                            android:backgroundTint="@color/green_primary"
+                            android:text="Generate"
+                            android:textColor="@color/white"
+                            android:textSize="11sp"
+                            app:cornerRadius="16dp"
+                            android:minWidth="70dp" />
+
+                    </LinearLayout>
 
                     <com.google.android.material.textfield.TextInputLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:hint="Enter phonetic transcription"
+                        android:hint="Romaji version (kyou wa ii tenki desu ne)"
                         app:boxBackgroundColor="@color/background_light"
                         app:boxCornerRadiusBottomEnd="8dp"
                         app:boxCornerRadiusBottomStart="8dp"
@@ -189,7 +229,7 @@
                             android:id="@+id/edit_romaji"
                             android:layout_width="match_parent"
                             android:layout_height="52dp"
-                            android:textSize="16sp" />
+                            android:textSize="18sp" />
 
                     </com.google.android.material.textfield.TextInputLayout>
 
@@ -386,34 +426,6 @@
                             android:textSize="14sp" />
 
                     </com.google.android.material.textfield.TextInputLayout>
-
-                </LinearLayout>
-
-            </androidx.cardview.widget.CardView>
-
-            <!-- Quick Actions -->
-            <androidx.cardview.widget.CardView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                app:cardCornerRadius="16dp"
-                app:cardElevation="0dp">
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="52dp"
-                    android:gravity="center"
-                    android:orientation="horizontal"
-                    android:padding="16dp">
-
-                    <com.google.android.material.button.MaterialButton
-                        android:id="@+id/btn_auto_romaji"
-                        android:layout_width="match_parent"
-                        android:layout_height="36dp"
-                        android:backgroundTint="@color/green_primary"
-                        android:text="Auto Generate Romaji"
-                        android:textColor="@color/white"
-                        android:textSize="14sp"
-                        app:cornerRadius="14dp" />
 
                 </LinearLayout>
 

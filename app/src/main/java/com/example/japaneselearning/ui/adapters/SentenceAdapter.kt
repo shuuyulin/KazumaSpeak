@@ -46,8 +46,9 @@ class SentenceAdapter(
                     if (!sentence.audioPath.isNullOrEmpty()) {
                         audioManager.playAudio(sentence.audioPath)
                     } else {
-                        // Use TTS if no audio file
-                        audioManager.speakJapanese(sentence.japanese)
+                        // Use TTS with the kana version if available, otherwise japanese
+                        val textToSpeak = if (sentence.kana.isNotEmpty()) sentence.kana else sentence.japanese
+                        audioManager.speakJapanese(textToSpeak)
                     }
                 }
                 

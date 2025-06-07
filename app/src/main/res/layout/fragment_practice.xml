@@ -5,15 +5,16 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/background_primary">
+    android:background="@color/background_primary"
+    android:fitsSystemWindows="true">
 
-    <!-- Title -->
+    <!-- Title with proper top margin for status bar -->
     <TextView
         android:id="@+id/title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="24dp"
-        android:layout_marginTop="24dp"
+        android:layout_marginTop="16dp"
         android:text="Practice Mode"
         android:textColor="@color/text_primary"
         android:textSize="28sp"
@@ -25,25 +26,24 @@
     <androidx.cardview.widget.CardView
         android:id="@+id/flashcard"
         android:layout_width="0dp"
-        android:layout_height="380dp"
+        android:layout_height="320dp"
         android:layout_marginStart="24dp"
-        android:layout_marginTop="24dp"
+        android:layout_marginTop="16dp"
         android:layout_marginEnd="24dp"
-        android:clickable="true"
-        android:focusable="true"
-        android:foreground="?android:attr/selectableItemBackground"
         app:cardCornerRadius="20dp"
         app:cardElevation="8dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/title">
 
-        <LinearLayout
+        <!-- Card Container for flip animations -->
+        <FrameLayout
+            android:id="@+id/card_container"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:gravity="center"
-            android:orientation="vertical"
-            android:padding="24dp">
+            android:clickable="true"
+            android:focusable="true"
+            android:foreground="?android:attr/selectableItemBackground">
 
             <!-- Front Side Content -->
             <LinearLayout
@@ -52,7 +52,9 @@
                 android:layout_height="match_parent"
                 android:gravity="center"
                 android:orientation="vertical"
-                android:visibility="visible">
+                android:padding="24dp"
+                android:visibility="visible"
+                android:background="@color/white">
 
                 <!-- Audio Button (when audio display is enabled) -->
                 <com.google.android.material.button.MaterialButton
@@ -104,6 +106,19 @@
                     android:textSize="18sp"
                     android:visibility="gone" />
 
+                <!-- English Text (for reverse mode) -->
+                <TextView
+                    android:id="@+id/english_text_front"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="16dp"
+                    android:gravity="center"
+                    android:text="Today is nice weather, isn't it?"
+                    android:textColor="@color/blue_primary"
+                    android:textSize="20sp"
+                    android:textStyle="bold"
+                    android:visibility="gone" />
+
                 <!-- Input field for reverse translation -->
                 <com.google.android.material.textfield.TextInputLayout
                     android:id="@+id/input_layout"
@@ -118,7 +133,10 @@
                         android:id="@+id/input_translation"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:textSize="16sp" />
+                        android:textSize="16sp"
+                        android:clickable="true"
+                        android:focusable="true"
+                        android:focusableInTouchMode="true" />
 
                 </com.google.android.material.textfield.TextInputLayout>
 
@@ -131,32 +149,57 @@
                 android:layout_height="match_parent"
                 android:gravity="center"
                 android:orientation="vertical"
-                android:visibility="gone">
+                android:padding="24dp"
+                android:visibility="gone"
+                android:background="@color/white">
 
-                <!-- English Translation -->
+                <!-- Correct Answer Label -->
                 <TextView
-                    android:id="@+id/english_text"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginBottom="16dp"
-                    android:gravity="center"
-                    android:text="Today is nice weather, isn't it?"
-                    android:textColor="@color/blue_primary"
-                    android:textSize="20sp"
-                    android:textStyle="bold" />
-
-                <!-- User Answer (for reverse translation) -->
-                <TextView
-                    android:id="@+id/user_answer_text"
+                    android:id="@+id/correct_answer_label"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="8dp"
-                    android:gravity="center"
-                    android:text="Your answer:"
+                    android:text="Correct Answer:"
                     android:textColor="@color/text_secondary"
                     android:textSize="14sp"
                     android:visibility="gone" />
 
+                <!-- Japanese Text (Back) -->
+                <TextView
+                    android:id="@+id/japanese_text_back"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="8dp"
+                    android:gravity="center"
+                    android:textColor="@color/text_primary"
+                    android:textSize="24sp"
+                    android:textStyle="bold"
+                    android:visibility="gone" />
+
+                <!-- Kana Text (Back) -->
+                <TextView
+                    android:id="@+id/kana_text_back"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="16dp"
+                    android:gravity="center"
+                    android:textColor="@color/text_secondary"
+                    android:textSize="20sp"
+                    android:textStyle="italic"
+                    android:visibility="gone" />
+
+                <!-- User Answer Label -->
+                <TextView
+                    android:id="@+id/user_answer_label"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="8dp"
+                    android:text="Your Answer:"
+                    android:textColor="@color/text_secondary"
+                    android:textSize="14sp"
+                    android:visibility="gone" />
+
+                <!-- User Answer Display -->
                 <TextView
                     android:id="@+id/user_answer_display"
                     android:layout_width="wrap_content"
@@ -168,129 +211,156 @@
                     android:textStyle="italic"
                     android:visibility="gone" />
 
+                <!-- English Translation (for normal mode) -->
+                <TextView
+                    android:id="@+id/english_text_back"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="16dp"
+                    android:gravity="center"
+                    android:text="Today is nice weather, isn't it?"
+                    android:textColor="@color/blue_primary"
+                    android:textSize="20sp"
+                    android:textStyle="bold"
+                    android:visibility="visible" />
+
             </LinearLayout>
 
-        </LinearLayout>
+        </FrameLayout>
 
     </androidx.cardview.widget.CardView>
 
     <!-- Display Options -->
-    <com.google.android.material.chip.ChipGroup
-        android:id="@+id/display_options"
+    <LinearLayout
+        android:id="@+id/display_options_container"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="24dp"
         android:layout_marginTop="16dp"
         android:layout_marginEnd="24dp"
+        android:background="@drawable/options_background"
+        android:orientation="vertical"
+        android:padding="16dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/flashcard"
-        app:singleLine="false">
+        app:layout_constraintTop_toBottomOf="@+id/flashcard">
 
-        <com.google.android.material.chip.Chip
-            android:id="@+id/chip_japanese"
+        <TextView
             android:layout_width="wrap_content"
-            android:layout_height="32dp"
-            android:checkable="true"
-            android:checked="true"
-            android:text="Japanese"
-            android:textSize="12sp"
-            app:chipBackgroundColor="@color/chip_background_selector"
-            app:chipStrokeColor="@color/blue_primary"
-            app:chipStrokeWidth="1dp" />
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="12dp"
+            android:text="Display Options"
+            android:textColor="@color/text_primary"
+            android:textSize="16sp"
+            android:textStyle="bold" />
 
-        <com.google.android.material.chip.Chip
-            android:id="@+id/chip_kana"
-            android:layout_width="wrap_content"
-            android:layout_height="32dp"
-            android:checkable="true"
-            android:text="Kana"
-            android:textSize="12sp"
-            app:chipBackgroundColor="@color/chip_background_selector"
-            app:chipStrokeColor="@color/blue_primary"
-            app:chipStrokeWidth="1dp" />
+        <com.google.android.material.chip.ChipGroup
+            android:id="@+id/display_options"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:chipSpacingHorizontal="8dp"
+            app:chipSpacingVertical="4dp"
+            app:singleLine="false">
 
-        <com.google.android.material.chip.Chip
-            android:id="@+id/chip_romaji"
-            android:layout_width="wrap_content"
-            android:layout_height="32dp"
-            android:checkable="true"
-            android:text="Romaji"
-            android:textSize="12sp"
-            app:chipBackgroundColor="@color/chip_background_selector"
-            app:chipStrokeColor="@color/blue_primary"
-            app:chipStrokeWidth="1dp" />
+            <com.google.android.material.chip.Chip
+                android:id="@+id/chip_japanese"
+                style="@style/CustomChipStyle"
+                android:layout_width="wrap_content"
+                android:layout_height="36dp"
+                android:checkable="true"
+                android:checked="true"
+                android:text="Japanese"
+                android:textSize="13sp" />
 
-        <com.google.android.material.chip.Chip
-            android:id="@+id/chip_audio"
-            android:layout_width="wrap_content"
-            android:layout_height="32dp"
-            android:checkable="true"
-            android:checked="true"
-            android:text="Audio"
-            android:textSize="12sp"
-            app:chipBackgroundColor="@color/chip_background_selector"
-            app:chipStrokeColor="@color/blue_primary"
-            app:chipStrokeWidth="1dp" />
+            <com.google.android.material.chip.Chip
+                android:id="@+id/chip_kana"
+                style="@style/CustomChipStyle"
+                android:layout_width="wrap_content"
+                android:layout_height="36dp"
+                android:checkable="true"
+                android:text="Kana"
+                android:textSize="13sp" />
 
-        <com.google.android.material.chip.Chip
-            android:id="@+id/chip_auto_play"
-            android:layout_width="wrap_content"
-            android:layout_height="32dp"
-            android:checkable="true"
-            android:text="Auto Play"
-            android:textSize="12sp"
-            app:chipBackgroundColor="@color/chip_background_selector"
-            app:chipStrokeColor="@color/blue_primary"
-            app:chipStrokeWidth="1dp" />
+            <com.google.android.material.chip.Chip
+                android:id="@+id/chip_romaji"
+                style="@style/CustomChipStyle"
+                android:layout_width="wrap_content"
+                android:layout_height="36dp"
+                android:checkable="true"
+                android:text="Romaji"
+                android:textSize="13sp" />
 
-    </com.google.android.material.chip.ChipGroup>
+            <com.google.android.material.chip.Chip
+                android:id="@+id/chip_audio"
+                style="@style/CustomChipStyle"
+                android:layout_width="wrap_content"
+                android:layout_height="36dp"
+                android:checkable="true"
+                android:checked="true"
+                android:text="Audio"
+                android:textSize="13sp" />
 
-    <!-- Mode Selection -->
-    <com.google.android.material.chip.ChipGroup
-        android:id="@+id/mode_selection"
+            <com.google.android.material.chip.Chip
+                android:id="@+id/chip_auto_play"
+                style="@style/CustomChipStyle"
+                android:layout_width="wrap_content"
+                android:layout_height="36dp"
+                android:checkable="true"
+                android:text="Auto Play"
+                android:textSize="13sp" />
+
+        </com.google.android.material.chip.ChipGroup>
+
+    </LinearLayout>
+
+    <!-- Mode Toggle Section - Properly positioned BELOW display options -->
+    <LinearLayout
+        android:id="@+id/mode_toggle_section"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="24dp"
-        android:layout_marginTop="8dp"
+        android:layout_marginTop="12dp"
         android:layout_marginEnd="24dp"
+        android:background="@drawable/toggle_background"
+        android:orientation="horizontal"
+        android:padding="4dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/display_options"
-        app:singleSelection="true">
+        app:layout_constraintTop_toBottomOf="@+id/display_options_container">
 
-        <com.google.android.material.chip.Chip
-            android:id="@+id/chip_flashcard_mode"
-            android:layout_width="wrap_content"
-            android:layout_height="32dp"
-            android:checkable="true"
-            android:checked="true"
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btn_flashcard_mode"
+            style="@style/Widget.Material3.Button.TextButton"
+            android:layout_width="0dp"
+            android:layout_height="40dp"
+            android:layout_weight="1"
+            android:backgroundTint="@color/blue_primary"
             android:text="Flashcard"
-            android:textSize="12sp"
-            app:chipBackgroundColor="@color/chip_background_selector"
-            app:chipStrokeColor="@color/green_primary"
-            app:chipStrokeWidth="1dp" />
+            android:textColor="@color/white"
+            android:textSize="14sp"
+            app:cornerRadius="16dp" />
 
-        <com.google.android.material.chip.Chip
-            android:id="@+id/chip_reverse_translation"
-            android:layout_width="wrap_content"
-            android:layout_height="32dp"
-            android:checkable="true"
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btn_reverse_mode"
+            style="@style/Widget.Material3.Button.TextButton"
+            android:layout_width="0dp"
+            android:layout_height="40dp"
+            android:layout_weight="1"
+            android:backgroundTint="@color/background_light"
             android:text="Reverse Translation"
-            android:textSize="12sp"
-            app:chipBackgroundColor="@color/chip_background_selector"
-            app:chipStrokeColor="@color/green_primary"
-            app:chipStrokeWidth="1dp" />
+            android:textColor="@color/text_secondary"
+            android:textSize="14sp"
+            app:cornerRadius="16dp" />
 
-    </com.google.android.material.chip.ChipGroup>
+    </LinearLayout>
 
-    <!-- Action Buttons -->
+    <!-- Action Buttons - With proper bottom margin -->
     <LinearLayout
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="24dp"
         android:layout_marginEnd="24dp"
-        android:layout_marginBottom="32dp"
+        android:layout_marginBottom="24dp"
         android:gravity="center"
         android:orientation="horizontal"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -304,23 +374,11 @@
             android:layout_height="56dp"
             android:layout_marginEnd="24dp"
             android:backgroundTint="@color/red_primary"
-            android:src="@drawable/ic_record"
+            android:src="@drawable/ic_mic"
             app:tint="@color/white"
             app:fabSize="normal" />
 
-        <!-- Check Answer Button (for reverse translation) -->
-        <com.google.android.material.button.MaterialButton
-            android:id="@+id/btn_check_answer"
-            android:layout_width="wrap_content"
-            android:layout_height="56dp"
-            android:layout_marginEnd="24dp"
-            android:backgroundTint="@color/orange_primary"
-            android:text="Check Answer"
-            android:textColor="@color/white"
-            android:visibility="gone"
-            app:cornerRadius="28dp" />
-
-        <!-- Next Button (White button renamed and repositioned) -->
+        <!-- Next Button -->
         <com.google.android.material.floatingactionbutton.FloatingActionButton
             android:id="@+id/btn_next"
             android:layout_width="56dp"

@@ -37,4 +37,10 @@
     <!-- <color name="text_primary">#212121</color> -->
     <!-- <color name="text_secondary">#757575</color> -->
     <color name="background_primary">#FFFFFF</color>
+
+
+    <!-- New colors for prettier UI -->
+    <color name="chip_background_default">#F5F5F5</color>
+    <color name="stroke_light">#E0E0E0</color>
+    
 </resources>

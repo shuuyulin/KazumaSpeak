@@ -1,8 +1,6 @@
 package com.example.japaneselearning.ui.fragments
 
 import android.Manifest
-import android.animation.AnimatorInflater
-import android.animation.AnimatorSet
 import android.content.pm.PackageManager
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -14,13 +12,11 @@ import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
-import androidx.lifecycle.lifecycleScope
 import com.example.japaneselearning.R
 import com.example.japaneselearning.data.entities.Sentence
 import com.example.japaneselearning.databinding.FragmentPracticeBinding
 import com.example.japaneselearning.ui.viewmodels.SentenceViewModel
 import com.example.japaneselearning.utils.AudioManager
-import kotlinx.coroutines.launch
 import java.io.File
 
 class PracticeFragment : Fragment() {
@@ -81,9 +77,25 @@ class PracticeFragment : Fragment() {
     }
     
     private fun setupClickListeners() {
-        // Card flip on click
-        binding.flashcard.setOnClickListener {
-            flipCard()
+        // Card flip on click (but not when clicking input field)
+        binding.cardContainer.setOnClickListener {
+            if (isReverseTranslation) {
+                // In reverse mode, flip only if we haven't checked answer yet
+                if (!isCardFlipped) {
+                    checkAnswerAndFlip()
+                } else {
+                    // If already flipped, go to next
+                    nextSentence()
+                }
+            } else {
+                // Normal mode - just flip
+                flipCard()
+            }
+        }
+        
+        // Prevent input field clicks from triggering card flip
+        binding.inputTranslation.setOnClickListener { 
+            // Do nothing - let the input field handle the click
         }
         
         // Audio play button
@@ -94,11 +106,6 @@ class PracticeFragment : Fragment() {
         // Record button
         binding.btnRecord.setOnClickListener {
             toggleRecording()
-        }
-        
-        // Check answer button (reverse translation)
-        binding.btnCheckAnswer.setOnClickListener {
-            checkAnswer()
         }
         
         // Next button
@@ -137,21 +144,53 @@ class PracticeFragment : Fragment() {
     }
     
     private fun setupModeSelection() {
-        binding.chipFlashcardMode.setOnCheckedChangeListener { _, isChecked ->
-            if (isChecked) {
-                isReverseTranslation = false
-                updateModeDisplay()
-            }
+        binding.btnFlashcardMode.setOnClickListener {
+            setFlashcardMode()
         }
         
-        binding.chipReverseTranslation.setOnCheckedChangeListener { _, isChecked ->
-            if (isChecked) {
-                isReverseTranslation = true
-                updateModeDisplay()
-            }
+        binding.btnReverseMode.setOnClickListener {
+            setReverseTranslationMode()
         }
     }
-    
+
+    private fun setFlashcardMode() {
+        isReverseTranslation = false
+        
+        // Update button appearances
+        binding.btnFlashcardMode.backgroundTintList = 
+            ContextCompat.getColorStateList(requireContext(), R.color.blue_primary)
+        binding.btnFlashcardMode.setTextColor(
+            ContextCompat.getColor(requireContext(), R.color.white)
+        )
+        
+        binding.btnReverseMode.backgroundTintList = 
+            ContextCompat.getColorStateList(requireContext(), R.color.background_light)
+        binding.btnReverseMode.setTextColor(
+            ContextCompat.getColor(requireContext(), R.color.text_secondary)
+        )
+        
+        updateModeDisplay()
+    }
+
+    private fun setReverseTranslationMode() {
+        isReverseTranslation = true
+        
+        // Update button appearances
+        binding.btnReverseMode.backgroundTintList = 
+            ContextCompat.getColorStateList(requireContext(), R.color.blue_primary)
+        binding.btnReverseMode.setTextColor(
+            ContextCompat.getColor(requireContext(), R.color.white)
+        )
+        
+        binding.btnFlashcardMode.backgroundTintList = 
+            ContextCompat.getColorStateList(requireContext(), R.color.background_light)
+        binding.btnFlashcardMode.setTextColor(
+            ContextCompat.getColor(requireContext(), R.color.text_secondary)
+        )
+        
+        updateModeDisplay()
+    }
+
     private fun displayCurrentSentence() {
         if (sentences.isEmpty()) return
         
@@ -161,16 +200,26 @@ class PracticeFragment : Fragment() {
         isCardFlipped = false
         binding.cardFront.visibility = View.VISIBLE
         binding.cardBack.visibility = View.GONE
+        binding.cardFront.alpha = 1f
+        binding.cardFront.rotationY = 0f
+        binding.cardBack.alpha = 0f
+        binding.cardBack.rotationY = -90f
         
         // Set content
         binding.japaneseText.text = sentence.japanese
         binding.kanaText.text = sentence.kana
         binding.romajiText.text = sentence.romaji
-        binding.englishText.text = sentence.english
+        binding.englishTextFront.text = sentence.english
+        binding.englishTextBack.text = sentence.english
         
-        // Clear previous input
+        // Clear previous input and back side content
         binding.inputTranslation.text?.clear()
         binding.userAnswerDisplay.text = ""
+        binding.correctAnswerLabel.visibility = View.GONE
+        binding.japaneseTextBack.visibility = View.GONE
+        binding.kanaTextBack.visibility = View.GONE
+        binding.userAnswerLabel.visibility = View.GONE
+        binding.userAnswerDisplay.visibility = View.GONE
         
         updateCardDisplay()
         updateModeDisplay()
@@ -195,64 +244,100 @@ class PracticeFragment : Fragment() {
     
     private fun updateModeDisplay() {
         if (isReverseTranslation) {
-            // Hide Japanese texts, show English, show input
+            // Reverse translation mode
             binding.japaneseText.visibility = View.GONE
             binding.kanaText.visibility = View.GONE
             binding.romajiText.visibility = View.GONE
             binding.btnPlayAudio.visibility = View.GONE
-
-            // Show English on front
-            binding.englishText.visibility = View.VISIBLE
+            binding.englishTextFront.visibility = View.VISIBLE
             binding.inputLayout.visibility = View.VISIBLE
-            binding.btnCheckAnswer.visibility = View.VISIBLE
-
-            // Move English to front side for reverse translation
-            val parent = binding.englishText.parent as? ViewGroup
-            parent?.removeView(binding.englishText) // Remove from current parent if it exists
-            binding.cardFront.addView(binding.englishText, binding.cardFront.childCount - 1)
+            
+            // Hide English on back side for reverse mode
+            binding.englishTextBack.visibility = View.GONE
         } else {
             // Normal flashcard mode
+            binding.englishTextFront.visibility = View.GONE
             binding.inputLayout.visibility = View.GONE
-            binding.btnCheckAnswer.visibility = View.GONE
-
-            // Move English back to back side
-            val parent = binding.englishText.parent as? ViewGroup
-            parent?.removeView(binding.englishText) // Remove from current parent if it exists
-            binding.cardBack.addView(binding.englishText, 0)
-
+            binding.englishTextBack.visibility = View.VISIBLE
+            
             updateCardDisplay()
         }
     }
     
     private fun flipCard() {
-        if (isReverseTranslation) return // Don't flip in reverse translation mode manually
+        val frontView = binding.cardFront
+        val backView = binding.cardBack
         
-        // Create flip animation
-        val flipOut = AnimatorInflater.loadAnimator(requireContext(), R.animator.flip_out)
-        val flipIn = AnimatorInflater.loadAnimator(requireContext(), R.animator.flip_in)
-        
-        flipOut.setTarget(if (isCardFlipped) binding.cardBack else binding.cardFront)
-        flipIn.setTarget(if (isCardFlipped) binding.cardFront else binding.cardBack)
-        
-        flipOut.addListener(object : android.animation.Animator.AnimatorListener {
-            override fun onAnimationStart(animation: android.animation.Animator) {}
-            override fun onAnimationEnd(animation: android.animation.Animator) {
-                // Switch visibility
-                if (isCardFlipped) {
-                    binding.cardBack.visibility = View.GONE
-                    binding.cardFront.visibility = View.VISIBLE
-                } else {
-                    binding.cardFront.visibility = View.GONE
-                    binding.cardBack.visibility = View.VISIBLE
-                }
-                flipIn.start()
+        if (isCardFlipped) {
+            // Flip from back to front
+            flipCardAnimation(backView, frontView) {
+                isCardFlipped = false
             }
-            override fun onAnimationCancel(animation: android.animation.Animator) {}
-            override fun onAnimationRepeat(animation: android.animation.Animator) {}
-        })
+        } else {
+            // Flip from front to back
+            flipCardAnimation(frontView, backView) {
+                isCardFlipped = true
+            }
+        }
+    }
+    
+    private fun flipCardAnimation(fromView: View, toView: View, onComplete: () -> Unit) {
+        // Set initial states
+        fromView.alpha = 1f
+        fromView.rotationY = 0f
+        toView.alpha = 0f
+        toView.rotationY = -90f
+        toView.visibility = View.VISIBLE
         
-        flipOut.start()
-        isCardFlipped = !isCardFlipped
+        // Animate out the current view
+        fromView.animate()
+            .rotationY(90f)
+            .alpha(0f)
+            .setDuration(200)
+            .withEndAction {
+                // Hide the old view
+                fromView.visibility = View.GONE
+                
+                // Animate in the new view
+                toView.animate()
+                    .rotationY(0f)
+                    .alpha(1f)
+                    .setDuration(200)
+                    .withEndAction {
+                        onComplete()
+                    }
+                    .start()
+            }
+            .start()
+    }
+    
+    private fun checkAnswerAndFlip() {
+        val userAnswer = binding.inputTranslation.text.toString().trim()
+        val sentence = sentences[currentIndex]
+        
+        // Prepare back side content
+        binding.correctAnswerLabel.visibility = View.VISIBLE
+        binding.japaneseTextBack.visibility = View.VISIBLE
+        binding.japaneseTextBack.text = sentence.japanese
+        
+        if (sentence.kana.isNotEmpty()) {
+            binding.kanaTextBack.visibility = View.VISIBLE
+            binding.kanaTextBack.text = sentence.kana
+        } else {
+            binding.kanaTextBack.visibility = View.GONE
+        }
+        
+        binding.userAnswerLabel.visibility = View.VISIBLE
+        binding.userAnswerDisplay.visibility = View.VISIBLE
+        binding.userAnswerDisplay.text = if (userAnswer.isNotEmpty()) userAnswer else "(No answer provided)"
+        
+        // Hide English on back for reverse mode
+        binding.englishTextBack.visibility = View.GONE
+        
+        // Flip to back
+        flipCardAnimation(binding.cardFront, binding.cardBack) {
+            isCardFlipped = true
+        }
     }
     
     private fun playCurrentAudio() {
@@ -315,71 +400,6 @@ class PracticeFragment : Fragment() {
         } else {
             Toast.makeText(context, "Recording failed", Toast.LENGTH_SHORT).show()
         }
-    }
-    
-    private fun checkAnswer() {
-        val userAnswer = binding.inputTranslation.text.toString().trim()
-        val correctAnswer = sentences[currentIndex].japanese
-        
-        // Show user answer and correct answer on back of card
-        binding.userAnswerText.visibility = View.VISIBLE
-        binding.userAnswerDisplay.visibility = View.VISIBLE
-        binding.userAnswerDisplay.text = userAnswer
-        
-        // Move English back to back side and show Japanese texts
-        binding.cardFront.removeView(binding.englishText)
-        binding.cardBack.addView(binding.englishText, 0)
-        
-        // Add Japanese texts to back side
-        val sentence = sentences[currentIndex]
-        binding.japaneseText.text = sentence.japanese
-        binding.kanaText.text = sentence.kana
-        binding.romajiText.text = sentence.romaji
-        
-        // Create text views for back side if they don't exist
-        val backJapanese = android.widget.TextView(requireContext()).apply {
-            text = sentence.japanese
-            textSize = 20f
-            setTextColor(ContextCompat.getColor(requireContext(), R.color.text_primary))
-            gravity = android.view.Gravity.CENTER
-        }
-        
-        val backKana = android.widget.TextView(requireContext()).apply {
-            text = sentence.kana
-            textSize = 16f
-            setTextColor(ContextCompat.getColor(requireContext(), R.color.text_secondary))
-            gravity = android.view.Gravity.CENTER
-        }
-        
-        binding.cardBack.addView(backJapanese, 1)
-        binding.cardBack.addView(backKana, 2)
-        
-        // Flip to show answer
-        flipCardToBack()
-    }
-    
-    private fun flipCardToBack() {
-        if (isCardFlipped) return
-        
-        val flipOut = AnimatorInflater.loadAnimator(requireContext(), R.animator.flip_out)
-        val flipIn = AnimatorInflater.loadAnimator(requireContext(), R.animator.flip_in)
-        
-        flipOut.setTarget(binding.cardFront)
-        flipIn.setTarget(binding.cardBack)
-        
-        flipOut.addListener(object : android.animation.Animator.AnimatorListener {
-            override fun onAnimationStart(animation: android.animation.Animator) {}
-            override fun onAnimationEnd(animation: android.animation.Animator) {
-                binding.cardFront.visibility = View.GONE
-                binding.cardBack.visibility = View.VISIBLE
-                flipIn.start()
-            }
-            override fun onAnimationCancel(animation: android.animation.Animator) {}
-            override fun onAnimationRepeat(animation: android.animation.Animator) {}
-        })
-        
-        flipOut.start()
-        isCardFlipped = true
     }
     
     private fun nextSentence() {

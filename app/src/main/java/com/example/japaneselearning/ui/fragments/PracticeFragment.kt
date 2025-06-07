@@ -50,7 +50,6 @@ class PracticeFragment : Fragment() {
         sentenceViewModel.allSentences.observe(viewLifecycleOwner, Observer { sentences ->
             if (sentences.isNotEmpty()) {
                 practiceViewModel.setSentences(sentences)
-                updateProgress(1, sentences.size)
             }
         })
         
@@ -137,7 +136,6 @@ class PracticeFragment : Fragment() {
             binding.cardBack.visibility = View.GONE
             binding.reverseModeContent.visibility = View.VISIBLE
             binding.displayOptions.alpha = 0.5f
-            binding.progressText.text = "${binding.progressText.text} (Reverse Mode)"
         } else {
             binding.reverseModeContent.visibility = View.GONE
             binding.displayOptions.alpha = 1.0f
@@ -175,11 +173,7 @@ class PracticeFragment : Fragment() {
         practiceViewModel.updateSettings(newSettings)
     }
     
-    private fun updateProgress(current: Int, total: Int) {
-        binding.progressBar.max = total
-        binding.progressBar.progress = current
-        binding.progressText.text = "$current of $total"
-    }
+
     
     private fun checkTranslationAnswer() {
         val userInput = binding.translationInput.text.toString()

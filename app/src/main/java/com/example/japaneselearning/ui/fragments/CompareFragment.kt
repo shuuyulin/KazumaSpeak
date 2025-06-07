@@ -49,7 +49,6 @@ class CompareFragment : Fragment() {
     private fun setupObservers() {
         viewModel.allRecordings.observe(viewLifecycleOwner, Observer { recordings ->
             recordingAdapter.submitList(recordings)
-            updateOverallProgress(recordings)
         })
     }
 
@@ -83,13 +82,6 @@ class CompareFragment : Fragment() {
         }
     }
 
-    private fun updateOverallProgress(recordings: List<Recording>) {
-        if (recordings.isNotEmpty()) {
-            val averageScore = recordings.map { it.similarityScore }.average().toInt()
-            binding.overallProgress.progress = averageScore
-            binding.progressText.text = "Overall Progress: $averageScore%"
-        }
-    }
 
     override fun onDestroyView() {
         super.onDestroyView()

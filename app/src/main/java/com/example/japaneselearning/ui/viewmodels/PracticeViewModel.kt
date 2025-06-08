@@ -9,8 +9,10 @@ import com.example.japaneselearning.data.database.AppDatabase
 import com.example.japaneselearning.data.entities.Sentence
 import com.example.japaneselearning.data.entities.Recording
 import com.example.japaneselearning.data.repository.SentenceRepository
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import android.util.Log
+import java.io.File
 
 data class PracticeSettings(
     val showJapanese: Boolean = true,
@@ -81,6 +83,25 @@ class PracticeViewModel(application: Application) : AndroidViewModel(application
             } catch (e: Exception) {
                 Log.e("PracticeViewModel", "Error saving recording: ${e.message}")
             }
+        }
+    }
+    
+    // Add this method if not already present
+    suspend fun deleteRecording(recording: Recording) {
+        viewModelScope.launch(Dispatchers.IO) {
+            // First delete the file
+            val file = File(recording.audioPath)
+            if (file.exists()) {
+                try {
+                    file.delete()
+                } catch (e: Exception) {
+                    Log.e("PracticeViewModel", "Error deleting audio file: ${e.message}")
+                }
+            }
+            
+            // Then delete from database
+            val recordingDao = AppDatabase.getDatabase(getApplication()).recordingDao()
+            recordingDao.deleteRecording(recording)
         }
     }
 }

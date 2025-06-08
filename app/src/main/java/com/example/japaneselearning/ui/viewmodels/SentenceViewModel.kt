@@ -7,7 +7,9 @@ import androidx.lifecycle.viewModelScope
 import com.example.japaneselearning.data.database.AppDatabase
 import com.example.japaneselearning.data.entities.Sentence
 import com.example.japaneselearning.data.repository.SentenceRepository
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import java.io.File
 
 class SentenceViewModel(application: Application) : AndroidViewModel(application) {
     private val repository: SentenceRepository
@@ -27,7 +29,20 @@ class SentenceViewModel(application: Application) : AndroidViewModel(application
         repository.updateSentence(sentence)
     }
     
-    fun deleteSentence(sentence: Sentence) = viewModelScope.launch {
+    fun deleteSentence(sentence: Sentence) = viewModelScope.launch(Dispatchers.IO) {
+        // Delete audio file if it exists
+        if (!sentence.audioPath.isNullOrEmpty()) {
+            val file = File(sentence.audioPath)
+            if (file.exists()) {
+                try {
+                    file.delete()
+                } catch (e: Exception) {
+                    android.util.Log.e("SentenceViewModel", "Error deleting audio file: ${e.message}")
+                }
+            }
+        }
+        
+        // Delete from database (this should cascade to delete associated recordings)
         repository.deleteSentence(sentence)
     }
 }

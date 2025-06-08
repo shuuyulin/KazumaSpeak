@@ -5,6 +5,7 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.core.content.ContextCompat
+import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
@@ -19,10 +20,14 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import java.io.File
+import java.text.SimpleDateFormat
+import java.util.Date
+import java.util.Locale
 
 class RecordingAdapter(
     private val repository: SentenceRepository,
-    private val audioManager: AudioManager
+    private val audioManager: AudioManager,
+    private val onDeleteClick: (Recording) -> Unit
 ) : ListAdapter<Recording, RecordingAdapter.RecordingViewHolder>(RecordingDiffCallback()) {
 
     private val TAG = "RecordingAdapter"
@@ -42,45 +47,20 @@ class RecordingAdapter(
         holder.bind(getItem(position))
     }
 
-    inner class RecordingViewHolder(
-        private val binding: ItemRecordingBinding
-    ) : RecyclerView.ViewHolder(binding.root) {
+    inner class RecordingViewHolder(private val binding: ItemRecordingBinding) :
+        RecyclerView.ViewHolder(binding.root) {
 
         fun bind(recording: Recording) {
             binding.apply {
-                // Set score info first
-                scoreText.text = "${recording.similarityScore.toInt()}%"
+                // Fix the scoreText reference - use tvScore instead
+                tvScore.text = "Score: ${recording.similarityScore.toInt()}%"
 
-                // Set score indicator color based on score
-                val (backgroundColor, indicatorColor, textColor) = when {
-                    recording.similarityScore >= 90f -> Triple(
-                        R.color.green_light,
-                        R.color.green_primary,
-                        R.color.green_primary
-                    )
-                    recording.similarityScore >= 70f -> Triple(
-                        R.color.orange_light,
-                        R.color.orange_primary,
-                        R.color.orange_primary
-                    )
-                    else -> Triple(
-                        R.color.red_light,
-                        R.color.red_primary,
-                        R.color.red_primary
-                    )
-                }
-
-                scoreCard.setCardBackgroundColor(ContextCompat.getColor(root.context, backgroundColor))
-                scoreIndicator.backgroundTintList = ContextCompat.getColorStateList(root.context, indicatorColor)
-                scoreText.setTextColor(ContextCompat.getColor(root.context, textColor))
-
-                // Format time
-                val timeAgo = formatTimeAgo(recording.createdAt)
-                timeText.text = timeAgo
+                // Set date text
+                tvDate.text = formatDate(recording.createdAt)
 
                 // Load sentence data for this recording
                 loadSentenceData(recording.sentenceId)
-                
+
                 // Check if recording file exists
                 val recordingFile = File(recording.audioPath)
                 if (!recordingFile.exists()) {
@@ -91,7 +71,7 @@ class RecordingAdapter(
                     btnPlayRecording.isEnabled = true
                     btnPlayRecording.alpha = 1.0f
                 }
-                
+
                 // Set up audio playback
                 btnPlayOriginal.setOnClickListener {
                     sentenceCache[recording.sentenceId]?.let { sentence ->
@@ -130,6 +110,22 @@ class RecordingAdapter(
                         btnPlayRecording.alpha = 0.5f
                     }
                 }
+
+                // Make sure the button text is "Record"
+                btnPlayRecording.text = "Record"
+
+                // Ensure delete button is properly set up
+                btnDeleteRecording.setOnClickListener {
+                    val context = root.context
+                    androidx.appcompat.app.AlertDialog.Builder(context)
+                        .setTitle("Delete Recording")
+                        .setMessage("Are you sure you want to delete this recording?")
+                        .setPositiveButton("Delete") { _, _ ->
+                            onDeleteClick(recording)
+                        }
+                        .setNegativeButton("Cancel", null)
+                        .show()
+                }
             }
         }
 
@@ -139,17 +135,17 @@ class RecordingAdapter(
                 updateSentenceUI(sentenceCache[sentenceId])
                 return
             }
-            
+
             // Fetch sentence data
             coroutineScope.launch {
                 try {
                     val sentence = withContext(Dispatchers.IO) {
                         repository.getSentenceById(sentenceId)
                     }
-                    
+
                     // Cache the result
                     sentenceCache[sentenceId] = sentence
-                    
+
                     // Update UI
                     updateSentenceUI(sentence)
                 } catch (e: Exception) {
@@ -158,7 +154,7 @@ class RecordingAdapter(
                 }
             }
         }
-        
+
         private fun updateSentenceUI(sentence: Sentence?) {
             binding.apply {
                 if (sentence != null) {
@@ -171,16 +167,9 @@ class RecordingAdapter(
             }
         }
 
-        private fun formatTimeAgo(timestamp: Long): String {
-            val now = System.currentTimeMillis()
-            val diff = now - timestamp
-
-            return when {
-                diff < 60000 -> "Just now"
-                diff < 3600000 -> "${diff / 60000}m ago"
-                diff < 86400000 -> "${diff / 3600000}h ago"
-                else -> "${diff / 86400000}d ago"
-            }
+        private fun formatDate(timestamp: Long): String {
+            val sdf = SimpleDateFormat("MMM d, yyyy", Locale.getDefault())
+            return sdf.format(Date(timestamp))
         }
     }
 

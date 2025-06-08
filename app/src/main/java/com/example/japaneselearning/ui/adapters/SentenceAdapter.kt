@@ -1,18 +1,25 @@
 // app/src/main/java/com/example/japaneselearning/ui/adapters/SentenceAdapter.kt
 package com.example.japaneselearning.ui.adapters
 
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
-import android.util.Log
+import android.widget.Toast
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.example.japaneselearning.data.entities.Sentence
 import com.example.japaneselearning.databinding.ItemSentenceBinding
+import com.example.japaneselearning.utils.AudioManager
+import java.io.File
 
 class SentenceAdapter(
-    private val onEditClick: (Sentence) -> Unit
+    private val audioManager: AudioManager,  // Add AudioManager parameter
+    private val onEditClick: (Sentence) -> Unit,
+    private val onDeleteClick: (Sentence) -> Unit
 ) : ListAdapter<Sentence, SentenceAdapter.SentenceViewHolder>(SentenceDiffCallback()) {
+
+    private val TAG = "SentenceAdapter"
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): SentenceViewHolder {
         val binding = ItemSentenceBinding.inflate(
@@ -33,55 +40,59 @@ class SentenceAdapter(
 
         fun bind(sentence: Sentence) {
             binding.apply {
-                japaneseText.text = sentence.japanese
-                kanaText.text = sentence.kana
-                romajiText.text = sentence.romaji
-                englishText.text = sentence.english
-                categoryChip.text = sentence.category ?: "General"
+                // Set text values
+                tvJapanese.text = sentence.japanese
+                tvKana.text = sentence.kana.takeIf { !it.isNullOrEmpty() } ?: ""
+                tvEnglish.text = sentence.english
+                tvCategory.text = sentence.category ?: "General"
                 
+                // Setup play button click listener
                 btnPlayAudio.setOnClickListener {
-                    val context = binding.root.context
-                    val audioManager = com.example.japaneselearning.utils.AudioManager(context)
-                    
-                    try {
-                        var audioPlayed = false
-                        
-                        // Try to play audio file first
-                        if (!sentence.audioPath.isNullOrEmpty()) {
-                            Log.d("SentenceAdapter", "Attempting to play audio file: ${sentence.audioPath}")
-                            audioPlayed = audioManager.playAudio(sentence.audioPath)
-                        }
-                        
-                        // Fallback to TTS if no audio file or audio file failed
-                        if (!audioPlayed) {
-                            Log.d("SentenceAdapter", "Audio file failed, using TTS")
-                            // Use kana version if available, otherwise japanese
-                            val textToSpeak = if (sentence.kana.isNotEmpty()) sentence.kana else sentence.japanese
-                            val ttsSuccess = audioManager.speakJapanese(textToSpeak)
-                            
-                            if (!ttsSuccess) {
-                                // Show error message if both audio file and TTS fail
-                                android.widget.Toast.makeText(
-                                    context, 
-                                    "Unable to play audio", 
-                                    android.widget.Toast.LENGTH_SHORT
-                                ).show()
-                            }
-                        }
-                    } catch (e: Exception) {
-                        Log.e("SentenceAdapter", "Error in play audio: ${e.message}", e)
-                        android.widget.Toast.makeText(
-                            context, 
-                            "Audio playback failed", 
-                            android.widget.Toast.LENGTH_SHORT
-                        ).show()
-                    }
+                    playAudio(sentence)
                 }
                 
-                btnEdit.setOnClickListener {
+                // Setup edit button click listener
+                btnEditSentence.setOnClickListener {
                     onEditClick(sentence)
                 }
+
+                // Setup delete button click listener
+                btnDeleteSentence.setOnClickListener {
+                    val context = root.context
+                    androidx.appcompat.app.AlertDialog.Builder(context)
+                        .setTitle("Delete Sentence")
+                        .setMessage("Are you sure you want to delete this sentence? This will also delete all recordings associated with it.")
+                        .setPositiveButton("Delete") { _, _ ->
+                            onDeleteClick(sentence)
+                        }
+                        .setNegativeButton("Cancel", null)
+                        .show()
+                }
             }
+        }
+        
+        private fun playAudio(sentence: Sentence) {
+            // Check if there's an audio file and try to play it
+            if (!sentence.audioPath.isNullOrEmpty()) {
+                val audioFile = File(sentence.audioPath)
+                if (audioFile.exists()) {
+                    Log.d(TAG, "Playing audio file: ${sentence.audioPath}")
+                    val success = audioManager.playAudio(sentence.audioPath)
+                    if (success) {
+                        return
+                    } else {
+                        Log.e(TAG, "Failed to play audio file: ${sentence.audioPath}")
+                        Toast.makeText(itemView.context, "Failed to play audio", Toast.LENGTH_SHORT).show()
+                    }
+                } else {
+                    Log.d(TAG, "Audio file does not exist: ${sentence.audioPath}")
+                }
+            }
+
+            // If no audio file or playback failed, use TTS
+            Log.d(TAG, "Using TTS to speak Japanese text")
+            val textToSpeak = if (!sentence.kana.isNullOrEmpty()) sentence.kana else sentence.japanese
+            audioManager.speakJapanese(textToSpeak)
         }
     }
 

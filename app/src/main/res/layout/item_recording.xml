@@ -1,136 +1,152 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.cardview.widget.CardView 
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginBottom="16dp"
-    app:cardCornerRadius="16dp"
-    app:cardElevation="2dp">
+    android:layout_margin="8dp"
+    app:cardCornerRadius="8dp"
+    app:cardElevation="4dp">
 
-    <LinearLayout
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical"
         android:padding="16dp">
 
-        <LinearLayout
-            android:layout_width="match_parent"
+        <!-- Score Display -->
+        <TextView
+            android:id="@+id/tvScore"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:gravity="center_vertical"
-            android:orientation="horizontal">
+            android:textColor="@color/blue_primary"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:text="Score: 85%" />
 
-            <LinearLayout
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:orientation="vertical">
-
-                <TextView
-                    android:id="@+id/japanese_text"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="こんにちは"
-                    android:textColor="@color/text_primary"
-                    android:textSize="16sp"
-                    android:textStyle="bold" />
-
-                <TextView
-                    android:id="@+id/english_text"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="2dp"
-                    android:text="Hello"
-                    android:textColor="@color/text_secondary"
-                    android:textSize="13sp" />
-
-            </LinearLayout>
-
-            <androidx.cardview.widget.CardView
-                android:id="@+id/score_card"
-                android:layout_width="68dp"
-                android:layout_height="24dp"
-                android:layout_marginStart="16dp"
-                app:cardBackgroundColor="@color/green_light"
-                app:cardCornerRadius="12dp"
-                app:cardElevation="0dp">
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:gravity="center"
-                    android:orientation="horizontal">
-
-                    <View
-                        android:id="@+id/score_indicator"
-                        android:layout_width="8dp"
-                        android:layout_height="8dp"
-                        android:layout_marginEnd="6dp"
-                        android:background="@drawable/circle_green"
-                        android:backgroundTint="@color/green_primary" />
-
-                    <TextView
-                        android:id="@+id/score_text"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="95%"
-                        android:textColor="@color/green_primary"
-                        android:textSize="13sp"
-                        android:textStyle="bold" />
-
-                </LinearLayout>
-
-            </androidx.cardview.widget.CardView>
-
-        </LinearLayout>
-
-        <LinearLayout
-            android:layout_width="match_parent"
+        <!-- Recording Date - Moved next to score -->
+        <TextView
+            android:id="@+id/tvDate"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
-            android:gravity="center_vertical"
-            android:orientation="horizontal">
+            android:layout_marginStart="16dp"
+            android:textColor="@color/gray_600"
+            android:textSize="14sp"
+            app:layout_constraintBottom_toBottomOf="@+id/tvScore"
+            app:layout_constraintStart_toEndOf="@+id/tvScore"
+            app:layout_constraintTop_toTopOf="@+id/tvScore"
+            tools:text="June 3, 2025" />
 
-            <com.google.android.material.button.MaterialButton
-                android:id="@+id/btn_play_original"
-                android:layout_width="120dp"
-                android:layout_height="36dp"
-                android:layout_marginEnd="8dp"
-                android:backgroundTint="@color/background_secondary"
-                android:text="Original"
-                android:textColor="@color/blue_primary"
-                android:textSize="13sp"
-                app:cornerRadius="18dp"
-                app:icon="@drawable/ic_play"
-                app:iconSize="16dp"
-                app:iconTint="@color/blue_primary" />
+        <!-- Delete Button - Placed at the right top -->
+        <ImageButton
+            android:id="@+id/btnDeleteRecording"
+            android:layout_width="36dp"
+            android:layout_height="36dp"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:contentDescription="Delete recording"
+            android:padding="8dp"
+            android:src="@drawable/ic_delete"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:tint="@color/red_primary" />
 
-            <com.google.android.material.button.MaterialButton
-                android:id="@+id/btn_play_recording"
-                android:layout_width="120dp"
-                android:layout_height="36dp"
-                android:layout_marginStart="8dp"
-                android:backgroundTint="@color/background_secondary"
-                android:text="Recording"
-                android:textColor="@color/red_primary"
-                android:textSize="13sp"
-                app:cornerRadius="18dp"
-                app:icon="@drawable/ic_play"
-                app:iconSize="16dp"
-                app:iconTint="@color/red_primary" />
+        <!-- Original Audio Button -->
+        <Button
+            android:id="@+id/btnPlayOriginal"
+            style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="12dp"
+            android:layout_marginEnd="8dp"
+            android:text="Original"
+            app:layout_constraintEnd_toStartOf="@+id/btnPlayRecording"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/tvScore" />
 
-            <TextView
-                android:id="@+id/time_text"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:gravity="end"
-                android:text="2m ago"
-                android:textColor="@color/text_secondary"
-                android:textSize="11sp" />
+        <!-- Recording Audio Button - Changed text to "Record" -->
+        <Button
+            android:id="@+id/btnPlayRecording"
+            style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:layout_marginEnd="8dp"
+            android:text="Record"
+            app:layout_constraintEnd_toStartOf="@+id/btnDeleteRecording"
+            app:layout_constraintStart_toEndOf="@+id/btnPlayOriginal"
+            app:layout_constraintTop_toTopOf="@+id/btnPlayOriginal" />
 
-        </LinearLayout>
+        <!-- Japanese Text -->
+        <TextView
+            android:id="@+id/japaneseText"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="12dp"
+            android:textColor="@color/text_primary"
+            android:textSize="16sp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/btnPlayOriginal"
+            tools:text="今日は良い天気ですね" />
 
-    </LinearLayout>
+        <!-- English Text -->
+        <TextView
+            android:id="@+id/englishText"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="4dp"
+            android:textColor="@color/text_secondary"
+            android:textSize="14sp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/japaneseText"
+            tools:text="Today is nice weather, isn't it?" />
 
+        <!-- Score Card -->
+        <androidx.cardview.widget.CardView
+            android:id="@+id/scoreCard"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:visibility="gone"
+            app:cardCornerRadius="4dp"
+            app:cardElevation="0dp"
+            tools:visibility="gone" />
+
+        <!-- Score Indicator -->
+        <View
+            android:id="@+id/scoreIndicator"
+            android:layout_width="8dp"
+            android:layout_height="8dp"
+            android:background="@drawable/circle_green"
+            android:visibility="gone"
+            tools:visibility="gone" />
+
+        <!-- Time Text -->
+        <TextView
+            android:id="@+id/timeText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/text_secondary"
+            android:textSize="12sp"
+            android:visibility="gone"
+            tools:text="2 hours ago"
+            tools:visibility="gone" />
+
+        <!-- Audio Progress Bar (Optional) -->
+        <ProgressBar
+            android:id="@+id/progressBar"
+            style="?android:attr/progressBarStyleHorizontal"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:max="100"
+            android:visibility="gone"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/englishText"
+            tools:progress="50"
+            tools:visibility="visible" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
 </androidx.cardview.widget.CardView>

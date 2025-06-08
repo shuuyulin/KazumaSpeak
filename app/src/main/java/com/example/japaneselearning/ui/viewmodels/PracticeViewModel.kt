@@ -10,6 +10,7 @@ import com.example.japaneselearning.data.entities.Sentence
 import com.example.japaneselearning.data.entities.Recording
 import com.example.japaneselearning.data.repository.SentenceRepository
 import kotlinx.coroutines.launch
+import android.util.Log
 
 data class PracticeSettings(
     val showJapanese: Boolean = true,
@@ -66,12 +67,20 @@ class PracticeViewModel(application: Application) : AndroidViewModel(application
         _practiceSettings.value = settings
     }
     
-    fun saveRecording(sentenceId: Long, audioPath: String, similarityScore: Float) = viewModelScope.launch {
-        val recording = Recording(
-            sentenceId = sentenceId,
-            audioPath = audioPath,
-            similarityScore = similarityScore
-        )
-        repository.insertRecording(recording)
+    fun saveRecording(sentenceId: Long, audioPath: String, similarityScore: Float) {
+        viewModelScope.launch {
+            try {
+                val recording = Recording(
+                    sentenceId = sentenceId,
+                    audioPath = audioPath,
+                    similarityScore = similarityScore,
+                    createdAt = System.currentTimeMillis()
+                )
+                Log.d("PracticeViewModel", "Saving recording: $recording")
+                repository.insertRecording(recording)
+            } catch (e: Exception) {
+                Log.e("PracticeViewModel", "Error saving recording: ${e.message}")
+            }
+        }
     }
 }

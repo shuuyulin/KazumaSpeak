@@ -8,16 +8,17 @@ import androidx.sqlite.db.SupportSQLiteDatabase
 import android.content.Context
 import com.example.japaneselearning.data.entities.Sentence
 import com.example.japaneselearning.data.entities.Recording
+import com.example.japaneselearning.data.database.MIGRATION_2_3
 
 @Database(
     entities = [Sentence::class, Recording::class],
-    version = 2, // Increment version
+    version = 3, // Increment from previous version (1)
     exportSchema = false
 )
 abstract class AppDatabase : RoomDatabase() {
     abstract fun sentenceDao(): SentenceDao
     abstract fun recordingDao(): RecordingDao
-    
+
     companion object {
         @Volatile
         private var INSTANCE: AppDatabase? = null
@@ -37,7 +38,8 @@ abstract class AppDatabase : RoomDatabase() {
                     AppDatabase::class.java,
                     "japanese_learning_database"
                 )
-                .addMigrations(MIGRATION_1_2)
+                .addMigrations(MIGRATION_2_3)
+                .fallbackToDestructiveMigration() // Add this line for dev purposes
                 .build()
                 INSTANCE = instance
                 instance

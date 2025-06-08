@@ -23,7 +23,7 @@ class KanjiToKanaConverter {
         "寒い" to "さむい",
         "涼しい" to "すずしい",
         "暖かい" to "あたたかい",
-        
+
         // Basic adjectives
         "良い" to "いい",
         "悪い" to "わるい",
@@ -34,6 +34,7 @@ class KanjiToKanaConverter {
         "高い" to "たかい",
         "安い" to "やすい",
         "美しい" to "うつくしい",
+        "幸" to "しあわ",
         
         // People and family
         "人" to "ひと",

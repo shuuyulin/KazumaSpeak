@@ -3,6 +3,7 @@ package com.example.japaneselearning.ui.fragments
 import android.Manifest
 import android.content.pm.PackageManager
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -15,6 +16,7 @@ import androidx.lifecycle.Observer
 import com.example.japaneselearning.R
 import com.example.japaneselearning.data.entities.Sentence
 import com.example.japaneselearning.databinding.FragmentPracticeBinding
+import com.example.japaneselearning.ui.viewmodels.PracticeViewModel
 import com.example.japaneselearning.ui.viewmodels.SentenceViewModel
 import com.example.japaneselearning.utils.AudioManager
 import java.io.File
@@ -23,7 +25,8 @@ class PracticeFragment : Fragment() {
     private var _binding: FragmentPracticeBinding? = null
     private val binding get() = _binding!!
     
-    private val viewModel: SentenceViewModel by viewModels()
+    private val sentenceViewModel: SentenceViewModel by viewModels()
+    private val practiceViewModel: PracticeViewModel by viewModels()
     private lateinit var audioManager: AudioManager
     
     private var sentences = listOf<Sentence>()
@@ -67,7 +70,7 @@ class PracticeFragment : Fragment() {
     }
     
     private fun setupObservers() {
-        viewModel.allSentences.observe(viewLifecycleOwner, Observer { sentenceList ->
+        sentenceViewModel.allSentences.observe(viewLifecycleOwner, Observer { sentenceList ->
             sentences = sentenceList
             if (sentences.isNotEmpty()) {
                 currentIndex = 0
@@ -394,12 +397,30 @@ class PracticeFragment : Fragment() {
         binding.btnRecord.backgroundTintList = 
             ContextCompat.getColorStateList(requireContext(), R.color.red_primary)
         
-        if (recordedFile != null) {
+        if (recordedFile != null && recordedFile.exists()) {
+            Log.d("PracticeFragment", "Recording saved: ${recordedFile.absolutePath}")
             Toast.makeText(context, "Recording saved", Toast.LENGTH_SHORT).show()
-            // TODO: Add similarity comparison logic here
+            
+            // Calculate similarity score (simplified version)
+            val similarityScore = calculateSimilarityScore()
+            
+            // Save to database using the current sentence
+            val currentSentence = sentences[currentIndex]
+            practiceViewModel.saveRecording(
+                sentenceId = currentSentence.id,
+                audioPath = recordedFile.absolutePath,
+                similarityScore = similarityScore
+            )
         } else {
+            Log.e("PracticeFragment", "Recording failed or file doesn't exist")
             Toast.makeText(context, "Recording failed", Toast.LENGTH_SHORT).show()
         }
+    }
+
+    private fun calculateSimilarityScore(): Float {
+        // This is a placeholder. In a real app, you would implement audio comparison
+        // between the recorded file and the original sentence audio
+        return (50 + (Math.random() * 50)).toFloat()
     }
     
     private fun nextSentence() {
@@ -424,9 +445,18 @@ class PracticeFragment : Fragment() {
         }
     }
     
+    override fun onStop() {
+        super.onStop()
+        audioManager.releaseMediaPlayer() // Now it's public and can be called
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        audioManager.release() // Full release of all resources
+    }
+    
     override fun onDestroyView() {
         super.onDestroyView()
-        audioManager.release()
         _binding = null
     }
 }

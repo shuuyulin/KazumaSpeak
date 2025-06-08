@@ -8,10 +8,13 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.example.japaneselearning.R
+import com.example.japaneselearning.data.database.AppDatabase
+import com.example.japaneselearning.data.repository.SentenceRepository
 import com.example.japaneselearning.databinding.FragmentCompareBinding
 import com.example.japaneselearning.ui.adapters.RecordingAdapter
 import com.example.japaneselearning.ui.viewmodels.PracticeViewModel
-import com.example.japaneselearning.data.entities.Recording
+import com.example.japaneselearning.utils.AudioManager
 
 class CompareFragment : Fragment() {
     private var _binding: FragmentCompareBinding? = null
@@ -19,6 +22,8 @@ class CompareFragment : Fragment() {
 
     private val viewModel: PracticeViewModel by viewModels()
     private lateinit var recordingAdapter: RecordingAdapter
+    private lateinit var repository: SentenceRepository
+    private lateinit var audioManager: AudioManager
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -32,13 +37,18 @@ class CompareFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        // Initialize repository and audio manager
+        val database = AppDatabase.getDatabase(requireContext())
+        repository = SentenceRepository(database)
+        audioManager = AudioManager(requireContext())
+
         setupRecyclerView()
         setupObservers()
         setupFilterChips()
     }
 
     private fun setupRecyclerView() {
-        recordingAdapter = RecordingAdapter()
+        recordingAdapter = RecordingAdapter(repository, audioManager)
 
         binding.recyclerRecordings.apply {
             layoutManager = LinearLayoutManager(context)
@@ -48,11 +58,28 @@ class CompareFragment : Fragment() {
 
     private fun setupObservers() {
         viewModel.allRecordings.observe(viewLifecycleOwner, Observer { recordings ->
-            recordingAdapter.submitList(recordings)
+            if (recordings.isEmpty()) {
+                showEmptyState(true)
+            } else {
+                showEmptyState(false)
+                recordingAdapter.submitList(recordings)
+            }
         })
     }
 
+    private fun showEmptyState(show: Boolean) {
+        if (show) {
+            binding.emptyStateLayout.visibility = View.VISIBLE
+            binding.recyclerRecordings.visibility = View.GONE
+        } else {
+            binding.emptyStateLayout.visibility = View.GONE
+            binding.recyclerRecordings.visibility = View.VISIBLE
+        }
+    }
+
     private fun setupFilterChips() {
+        binding.chipAll.isChecked = true
+
         binding.chipAll.setOnCheckedChangeListener { _, isChecked ->
             if (isChecked) filterRecordings("all")
         }
@@ -78,13 +105,24 @@ class CompareFragment : Fragment() {
                 "needs_work" -> recordings.filter { it.similarityScore < 70f }
                 else -> recordings
             }
-            recordingAdapter.submitList(filteredRecordings)
+
+            if (filteredRecordings.isEmpty()) {
+                showEmptyState(true)
+            } else {
+                showEmptyState(false)
+                recordingAdapter.submitList(filteredRecordings)
+            }
         }
     }
 
+    override fun onStop() {
+        super.onStop()
+        audioManager.releaseMediaPlayer()
+    }
 
     override fun onDestroyView() {
         super.onDestroyView()
+        audioManager.release()
         _binding = null
     }
 }

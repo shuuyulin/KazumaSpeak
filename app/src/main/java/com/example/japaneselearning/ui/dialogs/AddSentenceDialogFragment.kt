@@ -12,6 +12,7 @@ import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
@@ -24,7 +25,9 @@ import com.example.japaneselearning.utils.JapaneseTextConverter
 import com.example.japaneselearning.utils.NetworkUtils
 import com.example.japaneselearning.utils.ConversionResult
 import com.google.android.material.chip.Chip
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import java.io.File
 import java.io.FileOutputStream
 
@@ -41,6 +44,8 @@ class AddSentenceDialogFragment : DialogFragment() {
     private var audioSourceType: AudioSourceType = AudioSourceType.TTS
     private val categories = mutableSetOf<String>()
     private var selectedCategory: String? = null
+    private var audioFilePath: String? = null
+    private var isRecording = false
     
     enum class AudioSourceType {
         TTS, IMPORTED_FILE
@@ -187,7 +192,10 @@ class AddSentenceDialogFragment : DialogFragment() {
         }
         
         binding.btnPreviewAudio.setOnClickListener {
-            previewAudio()
+            val japaneseText = binding.editJapanese.text.toString().trim()
+            if (japaneseText.isNotEmpty()) {
+                audioManager.speakJapanese(japaneseText)
+            }
         }
         
         binding.btnGenerateKana.setOnClickListener {
@@ -312,28 +320,18 @@ class AddSentenceDialogFragment : DialogFragment() {
         // Handle audio based on selected source
         when (audioSourceType) {
             AudioSourceType.TTS -> {
-                try {
-                    // Generate TTS audio file
-                    val ttsFile = audioManager.generateTTSAudio(japanese)
-                    audioPath = ttsFile?.absolutePath
-                    
-                    if (audioPath == null) {
-                        Log.w("AddSentenceDialog", "TTS audio generation failed, but continuing to save")
-                        // Don't return - save sentence without audio
-                    }
-                } catch (e: Exception) {
-                    Log.e("AddSentenceDialog", "Error generating TTS audio: ${e.message}")
-                    // Continue without audio
-                }
+                // Don't try to generate TTS audio file - just mark this as TTS
+                // TTS will be generated on demand when playing
+                audioPath = ""  // Empty string indicates TTS should be used
             }
             AudioSourceType.IMPORTED_FILE -> {
                 selectedAudioUri?.let { uri ->
                     try {
                         // Copy imported file to app's audio directory
                         val inputStream = requireContext().contentResolver.openInputStream(uri)
-                        val audioFile = audioManager.createAudioFile("imported_${System.currentTimeMillis()}")
+                        val audioFile = audioManager.createAudioFile("imported")
                         inputStream?.use { input ->
-                            java.io.FileOutputStream(audioFile).use { output ->
+                            FileOutputStream(audioFile).use { output ->
                                 input.copyTo(output)
                             }
                         }
@@ -346,7 +344,7 @@ class AddSentenceDialogFragment : DialogFragment() {
                 }
             }
         }
-        
+
         val sentence = editingSentence?.copy(
             japanese = japanese,
             kana = finalKana,
@@ -450,6 +448,32 @@ class AddSentenceDialogFragment : DialogFragment() {
                 binding.btnAutoRomaji.text = "Generate"
                 binding.btnAutoRomaji.isEnabled = true
             }
+        }
+    }
+    
+    private fun generateAudioWithTTS() {
+        val japaneseText = binding.editJapanese.text.toString().trim()
+        
+        if (japaneseText.isEmpty()) {
+            Toast.makeText(context, "Please enter Japanese text first", Toast.LENGTH_SHORT).show()
+            return
+        }
+        
+        // Just play the TTS to demo the pronunciation
+        val success = audioManager.speakJapanese(japaneseText)
+        
+        if (success) {
+            // Save empty audio path to indicate using TTS
+            audioFilePath = ""
+            audioSourceType = AudioSourceType.TTS
+            
+            binding.audioStatus.text = "Using TTS"
+            binding.audioStatus.setTextColor(
+                ContextCompat.getColor(requireContext(), R.color.green_primary)
+            )
+            binding.btnPreviewAudio.visibility = View.VISIBLE
+        } else {
+            Toast.makeText(context, "TTS failed, please try again later", Toast.LENGTH_SHORT).show()
         }
     }
     

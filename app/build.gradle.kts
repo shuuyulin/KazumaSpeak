@@ -38,6 +38,13 @@ android {
     buildFeatures {
         viewBinding = true
     }
+    
+    // Add this section if not already present
+    sourceSets {
+        getByName("main") {
+            jniLibs.srcDir("libs")
+        }
+    }
 }
 
 dependencies {
@@ -60,4 +67,7 @@ dependencies {
     implementation(libs.converter.gson)
     implementation(libs.logging.interceptor)
     implementation(libs.okhttp)
+    
+    // Replace the current ISpikit implementation with:
+    implementation(fileTree(mapOf("dir" to "libs", "include" to listOf("*.aar"))))
 }

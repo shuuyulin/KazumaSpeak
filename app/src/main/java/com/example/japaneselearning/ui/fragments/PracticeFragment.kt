@@ -13,12 +13,15 @@ import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
+import androidx.lifecycle.lifecycleScope
 import com.example.japaneselearning.R
 import com.example.japaneselearning.data.entities.Sentence
 import com.example.japaneselearning.databinding.FragmentPracticeBinding
 import com.example.japaneselearning.ui.viewmodels.PracticeViewModel
 import com.example.japaneselearning.ui.viewmodels.SentenceViewModel
 import com.example.japaneselearning.utils.AudioManager
+import com.example.japaneselearning.utils.PronunciationAnalyzer
+import kotlinx.coroutines.launch
 import java.io.File
 
 class PracticeFragment : Fragment() {
@@ -28,6 +31,7 @@ class PracticeFragment : Fragment() {
     private val sentenceViewModel: SentenceViewModel by viewModels()
     private val practiceViewModel: PracticeViewModel by viewModels()
     private lateinit var audioManager: AudioManager
+    private lateinit var pronunciationAnalyzer: PronunciationAnalyzer
     
     private var sentences = listOf<Sentence>()
     private var currentIndex = 0
@@ -62,6 +66,12 @@ class PracticeFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         
         audioManager = AudioManager(requireContext())
+        pronunciationAnalyzer = PronunciationAnalyzer(requireContext())
+        
+        // Initialize the pronunciation analyzer
+        lifecycleScope.launch {
+            pronunciationAnalyzer.initialize()
+        }
         
         setupObservers()
         setupClickListeners()
@@ -401,26 +411,61 @@ class PracticeFragment : Fragment() {
             Log.d("PracticeFragment", "Recording saved: ${recordedFile.absolutePath}")
             Toast.makeText(context, "Recording saved", Toast.LENGTH_SHORT).show()
             
-            // Calculate similarity score (simplified version)
-            val similarityScore = calculateSimilarityScore()
-            
-            // Save to database using the current sentence
+            // Get the current sentence
             val currentSentence = sentences[currentIndex]
-            practiceViewModel.saveRecording(
-                sentenceId = currentSentence.id,
-                audioPath = recordedFile.absolutePath,
-                similarityScore = similarityScore
-            )
+            
+            // Launch coroutine to analyze pronunciation
+            lifecycleScope.launch {
+                // Show loading indicator
+                binding.btnRecord.isEnabled = false
+                
+                // Calculate similarity score using ISpikit
+                val similarityScore = calculateSimilarityScore(currentSentence, recordedFile)
+                
+                // Save to database using the current sentence
+                practiceViewModel.saveRecording(
+                    sentenceId = currentSentence.id,
+                    audioPath = recordedFile.absolutePath,
+                    similarityScore = similarityScore
+                )
+                
+                // Re-enable button
+                binding.btnRecord.isEnabled = true
+                
+                // Show feedback
+                val feedback = pronunciationAnalyzer.getDetailedFeedback(similarityScore)
+                Toast.makeText(context, feedback, Toast.LENGTH_LONG).show()
+            }
         } else {
             Log.e("PracticeFragment", "Recording failed or file doesn't exist")
             Toast.makeText(context, "Recording failed", Toast.LENGTH_SHORT).show()
         }
     }
 
-    private fun calculateSimilarityScore(): Float {
-        // This is a placeholder. In a real app, you would implement audio comparison
-        // between the recorded file and the original sentence audio
-        return (50 + (Math.random() * 50)).toFloat()
+    private suspend fun calculateSimilarityScore(sentence: Sentence, recordedFile: File): Float {
+        // Check if we have Japanese text to use for TTS-based analysis
+        if (!sentence.japanese.isNullOrEmpty()) {
+            Log.d("PracticeFragment", "Using TTS-based analysis with text: ${sentence.japanese}")
+            // Use the TTS-optimized method if we have Japanese text
+            return pronunciationAnalyzer.analyzePronunciationWithTTS(
+                sentence.japanese,
+                recordedFile.absolutePath
+            )
+        } else if (!sentence.audioPath.isNullOrEmpty()) {
+            // Fall back to file-to-file comparison if we have reference audio
+            val referenceFile = File(sentence.audioPath)
+            if (referenceFile.exists()) {
+                Log.d("PracticeFragment", "Using file-to-file analysis")
+                return pronunciationAnalyzer.analyzePronunciation(
+                    sentence.audioPath,
+                    recordedFile.absolutePath
+                )
+            }
+        }
+        
+        // If no reference is available, use mock analysis
+        Log.d("PracticeFragment", "No reference available, using mock analysis")
+        return 0.0f // Will cause mockAnalysis to be used
     }
     
     private fun nextSentence() {
@@ -452,7 +497,8 @@ class PracticeFragment : Fragment() {
 
     override fun onDestroy() {
         super.onDestroy()
-        audioManager.release() // Full release of all resources
+        audioManager.release()
+        pronunciationAnalyzer.release()
     }
     
     override fun onDestroyView() {

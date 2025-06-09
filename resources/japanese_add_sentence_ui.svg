@@ -1,0 +1,129 @@
+<svg width="375" height="812" viewBox="0 0 375 812" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- Background -->
+  <rect width="375" height="812" fill="#F8F9FA"/>
+  
+  <!-- Status Bar -->
+  <rect width="375" height="44" fill="#FFFFFF"/>
+  <text x="24" y="28" font-family="SF Pro Text" font-size="17" font-weight="600" fill="#000000">9:41</text>
+  <rect x="293" y="17" width="24" height="12" rx="2" fill="#34C759"/>
+  <rect x="321" y="15" width="15" height="16" rx="2" stroke="#000000" stroke-width="1" fill="none"/>
+  <rect x="323" y="17" width="11" height="12" rx="1" fill="#000000"/>
+  <rect x="341" y="15" width="22" height="12" rx="3" stroke="#000000" stroke-width="1" fill="none"/>
+  <rect x="343" y="17" width="6" height="8" rx="1" fill="#000000"/>
+  
+  <!-- Header with Navigation -->
+  <rect y="44" width="375" height="64" fill="#FFFFFF"/>
+  
+  <!-- Back Button -->
+  <circle cx="40" cy="76" r="20" fill="#F2F2F7"/>
+  <path d="M46 70 L34 76 L46 82" stroke="#007AFF" stroke-width="2" fill="none"/>
+  
+  <!-- Title -->
+  <text x="187" y="84" font-family="SF Pro Display" font-size="20" font-weight="600" fill="#1D1D1F" text-anchor="middle">Add New Sentence</text>
+  
+  <!-- Save Button -->
+  <rect x="299" y="60" width="60" height="32" rx="16" fill="#007AFF"/>
+  <text x="329" y="80" font-family="SF Pro Text" font-size="16" font-weight="600" fill="#FFFFFF" text-anchor="middle">Save</text>
+  
+  <line x1="0" y1="108" x2="375" y2="108" stroke="#E5E5E7" stroke-width="1"/>
+  
+  <!-- Form Content -->
+  <rect y="108" width="375" height="704" fill="#F8F9FA"/>
+  
+  <!-- Japanese Text Section -->
+  <rect x="24" y="128" width="327" height="100" rx="16" fill="#FFFFFF"/>
+  <text x="40" y="152" font-family="SF Pro Text" font-size="13" font-weight="600" fill="#8E8E93">JAPANESE TEXT</text>
+  
+  <!-- Japanese Input Field -->
+  <rect x="40" y="160" width="295" height="52" rx="8" fill="#F8F9FA" stroke="#E5E5E7" stroke-width="1"/>
+  <text x="48" y="180" font-family="SF Pro Text" font-size="14" font-weight="400" fill="#8E8E93">Enter Japanese text (kana/kanji)</text>
+  <text x="48" y="200" font-family="Hiragino Sans" font-size="18" font-weight="500" fill="#1D1D1F">おはようございます</text>
+  
+  <!-- Cursor -->
+  <line x1="200" y1="186" x2="200" y2="206" stroke="#007AFF" stroke-width="2">
+    <animate attributeName="opacity" values="1;0;1" dur="1s" repeatCount="indefinite"/>
+  </line>
+  
+  <!-- Romaji Section -->
+  <rect x="24" y="244" width="327" height="100" rx="16" fill="#FFFFFF"/>
+  <text x="40" y="268" font-family="SF Pro Text" font-size="13" font-weight="600" fill="#8E8E93">ROMAJI</text>
+  
+  <!-- Romaji Input Field -->
+  <rect x="40" y="276" width="295" height="52" rx="8" fill="#F8F9FA" stroke="#E5E5E7" stroke-width="1"/>
+  <text x="48" y="296" font-family="SF Pro Text" font-size="14" font-weight="400" fill="#8E8E93">Enter phonetic transcription</text>
+  <text x="48" y="316" font-family="SF Pro Text" font-size="16" font-weight="500" fill="#1D1D1F">Ohayou gozaimasu</text>
+  
+  <!-- English Translation Section -->
+  <rect x="24" y="360" width="327" height="100" rx="16" fill="#FFFFFF"/>
+  <text x="40" y="384" font-family="SF Pro Text" font-size="13" font-weight="600" fill="#8E8E93">ENGLISH TRANSLATION</text>
+  
+  <!-- English Input Field -->
+  <rect x="40" y="392" width="295" height="52" rx="8" fill="#F8F9FA" stroke="#E5E5E7" stroke-width="1"/>
+  <text x="48" y="412" font-family="SF Pro Text" font-size="14" font-weight="400" fill="#8E8E93">Enter English translation</text>
+  <text x="48" y="432" font-family="SF Pro Text" font-size="16" font-weight="500" fill="#1D1D1F">Good morning</text>
+  
+  <!-- Audio Section -->
+  <rect x="24" y="476" width="327" height="140" rx="16" fill="#FFFFFF"/>
+  <text x="40" y="500" font-family="SF Pro Text" font-size="13" font-weight="600" fill="#8E8E93">PRONUNCIATION AUDIO</text>
+  
+  <!-- Audio Source Selection -->
+  <rect x="40" y="512" width="140" height="36" rx="18" fill="#007AFF"/>
+  <circle cx="58" cy="530" r="8" fill="#FFFFFF"/>
+  <circle cx="58" cy="530" r="4" fill="#007AFF"/>
+  <text x="74" y="534" font-family="SF Pro Text" font-size="14" font-weight="500" fill="#FFFFFF">Native Audio</text>
+  
+  <rect x="195" y="512" width="140" height="36" rx="18" fill="#F2F2F7"/>
+  <circle cx="213" cy="530" r="8" stroke="#8E8E93" stroke-width="2" fill="#FFFFFF"/>
+  <text x="229" y="534" font-family="SF Pro Text" font-size="14" font-weight="500" fill="#8E8E93">TTS Audio</text>
+  
+  <!-- Audio Controls -->
+  <rect x="40" y="564" width="120" height="36" rx="18" fill="#34C759"/>
+  <circle cx="58" cy="582" r="12" fill="#FFFFFF"/>
+  <path d="M54 578 L62 582 L54 586 Z" fill="#34C759"/>
+  <text x="76" y="586" font-family="SF Pro Text" font-size="14" font-weight="500" fill="#FFFFFF">Play</text>
+  
+  <rect x="175" y="564" width="120" height="36" rx="18" fill="#FF3B30"/>
+  <circle cx="193" cy="582" r="12" fill="#FFFFFF"/>
+  <circle cx="193" cy="582" r="4" fill="#FF3B30"/>
+  <text x="211" y="586" font-family="SF Pro Text" font-size="14" font-weight="500" fill="#FF3B30">Record</text>
+  
+  <rect x="310" y="564" width="25" height="36" rx="18" fill="#F2F2F7"/>
+  <path d="M318 576 L318 588 M322 572 Q330 582 322 592" stroke="#8E8E93" stroke-width="2" fill="none"/>
+  
+  <!-- Tags/Category Section -->
+  <rect x="24" y="632" width="327" height="100" rx="16" fill="#FFFFFF"/>
+  <text x="40" y="656" font-family="SF Pro Text" font-size="13" font-weight="600" fill="#8E8E93">CATEGORY (OPTIONAL)</text>
+  
+  <!-- Category Tags -->
+  <rect x="40" y="668" width="70" height="28" rx="14" fill="#007AFF"/>
+  <text x="75" y="686" font-family="SF Pro Text" font-size="13" font-weight="500" fill="#FFFFFF" text-anchor="middle">Greetings</text>
+  
+  <rect x="118" y="668" width="60" height="28" rx="14" fill="#F2F2F7"/>
+  <text x="148" y="686" font-family="SF Pro Text" font-size="13" font-weight="500" fill="#8E8E93" text-anchor="middle">Basic</text>
+  
+  <rect x="186" y="668" width="80" height="28" rx="14" fill="#F2F2F7"/>
+  <text x="226" y="686" font-family="SF Pro Text" font-size="13" font-weight="500" fill="#8E8E93" text-anchor="middle">Conversation</text>
+  
+  <rect x="274" y="668" width="60" height="28" rx="14" fill="#F2F2F7"/>
+  <circle cx="286" cy="682" r="8" stroke="#8E8E93" stroke-width="1" fill="none"/>
+  <line x1="282" y1="682" x2="290" y2="682" stroke="#8E8E93" stroke-width="1"/>
+  <line x1="286" y1="678" x2="286" y2="686" stroke="#8E8E93" stroke-width="1"/>
+  <text x="300" y="686" font-family="SF Pro Text" font-size="13" font-weight="500" fill="#8E8E93">Add</text>
+  
+  <!-- Custom Category Input -->
+  <rect x="40" y="704" width="295" height="20" rx="4" fill="transparent"/>
+  <text x="40" y="718" font-family="SF Pro Text" font-size="14" font-weight="400" fill="#8E8E93">Add custom category...</text>
+  
+  <!-- Quick Actions -->
+  <rect x="24" y="748" width="327" height="52" rx="16" fill="#FFFFFF"/>
+  
+  <!-- Generate TTS Button -->
+  <rect x="40" y="760" width="140" height="28" rx="14" fill="#FF9500"/>
+  <circle cx="58" cy="774" r="8" fill="#FFFFFF"/>
+  <text x="64" y="771" font-family="SF Pro Text" font-size="10" font-weight="600" fill="#FF9500">TTS</text>
+  <text x="74" y="778" font-family="SF Pro Text" font-size="13" font-weight="500" fill="#FFFFFF">Generate Audio</text>
+  
+  <!-- Auto-fill Romaji Button -->
+  <rect x="195" y="760" width="140" height="28" rx="14" fill="#34C759"/>
+  <text x="265" y="778" font-family="SF Pro Text" font-size="13" font-weight="500" fill="#FFFFFF" text-anchor="middle">Auto Romaji</text>
+</svg>

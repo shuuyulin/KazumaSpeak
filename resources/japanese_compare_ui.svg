@@ -1,0 +1,168 @@
+<svg width="375" height="812" viewBox="0 0 375 812" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- Background -->
+  <rect width="375" height="812" fill="#F8F9FA"/>
+  
+  <!-- Status Bar -->
+  <rect width="375" height="44" fill="#FFFFFF"/>
+  <text x="24" y="28" font-family="SF Pro Text" font-size="17" font-weight="600" fill="#000000">9:41</text>
+  <rect x="293" y="17" width="24" height="12" rx="2" fill="#34C759"/>
+  <rect x="321" y="15" width="15" height="16" rx="2" stroke="#000000" stroke-width="1" fill="none"/>
+  <rect x="323" y="17" width="11" height="12" rx="1" fill="#000000"/>
+  <rect x="341" y="15" width="22" height="12" rx="3" stroke="#000000" stroke-width="1" fill="none"/>
+  <rect x="343" y="17" width="6" height="8" rx="1" fill="#000000"/>
+  
+  <!-- Header -->
+  <rect y="44" width="375" height="64" fill="#FFFFFF"/>
+  <text x="24" y="84" font-family="SF Pro Display" font-size="28" font-weight="700" fill="#1D1D1F">Pronunciation</text>
+  <line x1="0" y1="108" x2="375" y2="108" stroke="#E5E5E7" stroke-width="1"/>
+  
+  <!-- Tab Navigation -->
+  <rect y="108" width="375" height="56" fill="#FFFFFF"/>
+  
+  <!-- Tab 1 - Sentences -->
+  <rect x="0" y="108" width="125" height="56" fill="#FFFFFF"/>
+  <rect x="16" y="124" width="24" height="24" rx="4" stroke="#8E8E93" stroke-width="2" fill="none"/>
+  <rect x="20" y="128" width="16" height="2" rx="1" fill="#8E8E93"/>
+  <rect x="20" y="132" width="12" height="2" rx="1" fill="#8E8E93"/>
+  <rect x="20" y="136" width="8" height="2" rx="1" fill="#8E8E93"/>
+  <rect x="20" y="140" width="14" height="2" rx="1" fill="#8E8E93"/>
+  <text x="48" y="142" font-family="SF Pro Text" font-size="13" font-weight="500" fill="#8E8E93">Sentences</text>
+  
+  <!-- Tab 2 - Practice -->
+  <rect x="125" y="108" width="125" height="56" fill="#FFFFFF"/>
+  <rect x="141" y="124" width="24" height="24" rx="12" stroke="#8E8E93" stroke-width="2" fill="none"/>
+  <circle cx="153" cy="136" r="6" fill="#8E8E93"/>
+  <text x="173" y="142" font-family="SF Pro Text" font-size="13" font-weight="500" fill="#8E8E93">Practice</text>
+  
+  <!-- Tab 3 - Compare (Active) -->
+  <rect x="250" y="108" width="125" height="56" fill="#FFFFFF"/>
+  <rect x="266" y="124" width="24" height="24" rx="4" fill="#007AFF"/>
+  <circle cx="274" cy="132" r="2" fill="#FFFFFF"/>
+  <circle cx="282" cy="132" r="2" fill="#FFFFFF"/>
+  <path d="M270 138 L278 144 L286 138" stroke="#FFFFFF" stroke-width="2" fill="none"/>
+  <text x="298" y="142" font-family="SF Pro Text" font-size="13" font-weight="600" fill="#007AFF">Compare</text>
+  
+  <line x1="0" y1="164" x2="375" y2="164" stroke="#E5E5E7" stroke-width="1"/>
+  
+  <!-- Filter Buttons -->
+  <rect y="164" width="375" height="60" fill="#FFFFFF"/>
+  <rect x="24" y="180" width="60" height="28" rx="14" fill="#007AFF"/>
+  <text x="54" y="198" font-family="SF Pro Text" font-size="13" font-weight="600" fill="#FFFFFF" text-anchor="middle">All</text>
+  
+  <rect x="96" y="180" width="80" height="28" rx="14" fill="#F2F2F7"/>
+  <text x="136" y="198" font-family="SF Pro Text" font-size="13" font-weight="500" fill="#007AFF" text-anchor="middle">Excellent</text>
+  
+  <rect x="188" y="180" width="60" height="28" rx="14" fill="#F2F2F7"/>
+  <text x="218" y="198" font-family="SF Pro Text" font-size="13" font-weight="500" fill="#007AFF" text-anchor="middle">Good</text>
+  
+  <rect x="260" y="180" width="80" height="28" rx="14" fill="#F2F2F7"/>
+  <text x="300" y="198" font-family="SF Pro Text" font-size="13" font-weight="500" fill="#007AFF" text-anchor="middle">Needs Work</text>
+  
+  <line x1="0" y1="224" x2="375" y2="224" stroke="#E5E5E7" stroke-width="1"/>
+  
+  <!-- Recording List -->
+  <rect y="224" width="375" height="588" fill="#F8F9FA"/>
+  
+  <!-- Recording Item 1 - Excellent -->
+  <rect x="24" y="240" width="327" height="120" rx="16" fill="#FFFFFF"/>
+  
+  <!-- Japanese Text -->
+  <text x="40" y="268" font-family="Hiragino Sans" font-size="16" font-weight="600" fill="#1D1D1F">こんにちは</text>
+  <text x="40" y="286" font-family="SF Pro Text" font-size="13" font-weight="400" fill="#8E8E93">Hello</text>
+  
+  <!-- Similarity Score - Excellent -->
+  <rect x="267" y="252" width="68" height="24" rx="12" fill="#E8F5E8"/>
+  <circle cx="279" cy="264" r="4" fill="#34C759"/>
+  <text x="289" y="268" font-family="SF Pro Text" font-size="13" font-weight="600" fill="#34C759">95%</text>
+  
+  <!-- Audio Controls -->
+  <rect x="40" y="300" width="120" height="36" rx="18" fill="#F2F2F7"/>
+  <circle cx="58" cy="318" r="12" fill="#007AFF"/>
+  <path d="M54 314 L62 318 L54 322 Z" fill="#FFFFFF"/>
+  <text x="76" y="322" font-family="SF Pro Text" font-size="13" font-weight="500" fill="#007AFF">Original</text>
+  
+  <rect x="175" y="300" width="120" height="36" rx="18" fill="#F2F2F7"/>
+  <circle cx="193" cy="318" r="12" fill="#FF3B30"/>
+  <path d="M189 314 L197 318 L189 322 Z" fill="#FFFFFF"/>
+  <text x="211" y="322" font-family="SF Pro Text" font-size="13" font-weight="500" fill="#FF3B30">Recording</text>
+  
+  <text x="310" y="322" font-family="SF Pro Text" font-size="11" font-weight="400" fill="#8E8E93">2m ago</text>
+  
+  <!-- Recording Item 2 - Good -->
+  <rect x="24" y="376" width="327" height="120" rx="16" fill="#FFFFFF"/>
+  
+  <text x="40" y="404" font-family="Hiragino Sans" font-size="16" font-weight="600" fill="#1D1D1F">ありがとう</text>
+  <text x="40" y="422" font-family="SF Pro Text" font-size="13" font-weight="400" fill="#8E8E93">Thank you</text>
+  
+  <!-- Similarity Score - Good -->
+  <rect x="267" y="388" width="68" height="24" rx="12" fill="#FFF3E0"/>
+  <circle cx="279" cy="400" r="4" fill="#FF9500"/>
+  <text x="289" y="404" font-family="SF Pro Text" font-size="13" font-weight="600" fill="#FF9500">78%</text>
+  
+  <!-- Audio Controls -->
+  <rect x="40" y="436" width="120" height="36" rx="18" fill="#F2F2F7"/>
+  <circle cx="58" cy="454" r="12" fill="#007AFF"/>
+  <path d="M54 450 L62 454 L54 458 Z" fill="#FFFFFF"/>
+  <text x="76" y="458" font-family="SF Pro Text" font-size="13" font-weight="500" fill="#007AFF">Original</text>
+  
+  <rect x="175" y="436" width="120" height="36" rx="18" fill="#F2F2F7"/>
+  <circle cx="193" cy="454" r="12" fill="#FF3B30"/>
+  <path d="M189 450 L197 454 L189 458 Z" fill="#FFFFFF"/>
+  <text x="211" y="458" font-family="SF Pro Text" font-size="13" font-weight="500" fill="#FF3B30">Recording</text>
+  
+  <text x="310" y="458" font-family="SF Pro Text" font-size="11" font-weight="400" fill="#8E8E93">5m ago</text>
+  
+  <!-- Recording Item 3 - Needs Work -->
+  <rect x="24" y="512" width="327" height="120" rx="16" fill="#FFFFFF"/>
+  
+  <text x="40" y="540" font-family="Hiragino Sans" font-size="16" font-weight="600" fill="#1D1D1F">今日は良い天気ですね</text>
+  <text x="40" y="558" font-family="SF Pro Text" font-size="13" font-weight="400" fill="#8E8E93">It's nice weather today</text>
+  
+  <!-- Similarity Score - Needs Work -->
+  <rect x="267" y="524" width="68" height="24" rx="12" fill="#FFEBEE"/>
+  <circle cx="279" cy="536" r="4" fill="#FF3B30"/>
+  <text x="289" y="540" font-family="SF Pro Text" font-size="13" font-weight="600" fill="#FF3B30">52%</text>
+  
+  <!-- Audio Controls -->
+  <rect x="40" y="572" width="120" height="36" rx="18" fill="#F2F2F7"/>
+  <circle cx="58" cy="590" r="12" fill="#007AFF"/>
+  <path d="M54 586 L62 590 L54 594 Z" fill="#FFFFFF"/>
+  <text x="76" y="594" font-family="SF Pro Text" font-size="13" font-weight="500" fill="#007AFF">Original</text>
+  
+  <rect x="175" y="572" width="120" height="36" rx="18" fill="#F2F2F7"/>
+  <circle cx="193" cy="590" r="12" fill="#FF3B30"/>
+  <path d="M189 586 L197 590 L189 594 Z" fill="#FFFFFF"/>
+  <text x="211" y="594" font-family="SF Pro Text" font-size="13" font-weight="500" fill="#FF3B30">Recording</text>
+  
+  <text x="305" y="594" font-family="SF Pro Text" font-size="11" font-weight="400" fill="#8E8E93">10m ago</text>
+  
+  <!-- Recording Item 4 - Good -->
+  <rect x="24" y="648" width="327" height="120" rx="16" fill="#FFFFFF"/>
+  
+  <text x="40" y="676" font-family="Hiragino Sans" font-size="16" font-weight="600" fill="#1D1D1F">すみません</text>
+  <text x="40" y="694" font-family="SF Pro Text" font-size="13" font-weight="400" fill="#8E8E93">Excuse me</text>
+  
+  <!-- Similarity Score - Good -->
+  <rect x="267" y="660" width="68" height="24" rx="12" fill="#FFF3E0"/>
+  <circle cx="279" cy="672" r="4" fill="#FF9500"/>
+  <text x="289" y="676" font-family="SF Pro Text" font-size="13" font-weight="600" fill="#FF9500">81%</text>
+  
+  <!-- Audio Controls -->
+  <rect x="40" y="708" width="120" height="36" rx="18" fill="#F2F2F7"/>
+  <circle cx="58" cy="726" r="12" fill="#007AFF"/>
+  <path d="M54 722 L62 726 L54 730 Z" fill="#FFFFFF"/>
+  <text x="76" y="730" font-family="SF Pro Text" font-size="13" font-weight="500" fill="#007AFF">Original</text>
+  
+  <rect x="175" y="708" width="120" height="36" rx="18" fill="#F2F2F7"/>
+  <circle cx="193" cy="726" r="12" fill="#FF3B30"/>
+  <path d="M189 722 L197 726 L189 730 Z" fill="#FFFFFF"/>
+  <text x="211" y="730" font-family="SF Pro Text" font-size="13" font-weight="500" fill="#FF3B30">Recording</text>
+  
+  <text x="305" y="730" font-family="SF Pro Text" font-size="11" font-weight="400" fill="#8E8E93">15m ago</text>
+  
+  <!-- Overall Progress Section -->
+  <rect x="24" y="784" width="327" height="12" rx="6" fill="#E5E5E7"/>
+  <rect x="24" y="784" width="196" height="12" rx="6" fill="#007AFF"/>
+  <text x="187" y="808" font-family="SF Pro Text" font-size="13" font-weight="500" fill="#8E8E93" text-anchor="middle">Overall Progress: 76%</text>
+
+</svg>

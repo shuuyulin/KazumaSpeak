@@ -1,0 +1,141 @@
+<svg width="375" height="812" viewBox="0 0 375 812" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- Background -->
+  <rect width="375" height="812" fill="#F8F9FA"/>
+  
+  <!-- Status Bar -->
+  <rect width="375" height="44" fill="#FFFFFF"/>
+  <text x="24" y="28" font-family="SF Pro Text" font-size="17" font-weight="600" fill="#000000">9:41</text>
+  <rect x="293" y="17" width="24" height="12" rx="2" fill="#34C759"/>
+  <rect x="321" y="15" width="15" height="16" rx="2" stroke="#000000" stroke-width="1" fill="none"/>
+  <rect x="323" y="17" width="11" height="12" rx="1" fill="#000000"/>
+  <rect x="341" y="15" width="22" height="12" rx="3" stroke="#000000" stroke-width="1" fill="none"/>
+  <rect x="343" y="17" width="6" height="8" rx="1" fill="#000000"/>
+  
+  <!-- Header -->
+  <rect y="44" width="375" height="64" fill="#FFFFFF"/>
+  <text x="24" y="84" font-family="SF Pro Display" font-size="28" font-weight="700" fill="#1D1D1F">Practice Mode</text>
+  <line x1="0" y1="108" x2="375" y2="108" stroke="#E5E5E7" stroke-width="1"/>
+  
+  <!-- Tab Navigation -->
+  <rect y="108" width="375" height="56" fill="#FFFFFF"/>
+  
+  <!-- Tab 1 - Sentences -->
+  <rect x="0" y="108" width="125" height="56" fill="#FFFFFF"/>
+  <rect x="16" y="124" width="24" height="24" rx="4" stroke="#8E8E93" stroke-width="2" fill="none"/>
+  <rect x="20" y="128" width="16" height="2" rx="1" fill="#8E8E93"/>
+  <rect x="20" y="132" width="12" height="2" rx="1" fill="#8E8E93"/>
+  <rect x="20" y="136" width="8" height="2" rx="1" fill="#8E8E93"/>
+  <rect x="20" y="140" width="14" height="2" rx="1" fill="#8E8E93"/>
+  <text x="48" y="142" font-family="SF Pro Text" font-size="13" font-weight="500" fill="#8E8E93">Sentences</text>
+  
+  <!-- Tab 2 - Practice (Active) -->
+  <rect x="125" y="108" width="125" height="56" fill="#FFFFFF"/>
+  <rect x="141" y="124" width="24" height="24" rx="12" fill="#007AFF"/>
+  <circle cx="153" cy="136" r="6" fill="#FFFFFF"/>
+  <text x="173" y="142" font-family="SF Pro Text" font-size="13" font-weight="600" fill="#007AFF">Practice</text>
+  
+  <!-- Tab 3 - Compare -->
+  <rect x="250" y="108" width="125" height="56" fill="#FFFFFF"/>
+  <rect x="266" y="124" width="24" height="24" rx="4" stroke="#8E8E93" stroke-width="2" fill="none"/>
+  <circle cx="274" cy="132" r="2" fill="#8E8E93"/>
+  <circle cx="282" cy="132" r="2" fill="#8E8E93"/>
+  <path d="M270 138 L278 144 L286 138" stroke="#8E8E93" stroke-width="2" fill="none"/>
+  <text x="298" y="142" font-family="SF Pro Text" font-size="13" font-weight="500" fill="#8E8E93">Compare</text>
+  
+  <line x1="0" y1="164" x2="375" y2="164" stroke="#E5E5E7" stroke-width="1"/>
+  
+  <!-- Progress Indicator -->
+  <rect x="24" y="180" width="327" height="8" rx="4" fill="#E5E5E7"/>
+  <rect x="24" y="180" width="65" height="8" rx="4" fill="#FF9500"/>
+  <text x="187" y="208" font-family="SF Pro Text" font-size="13" font-weight="500" fill="#8E8E93">2 of 10 (Reverse Mode)</text>
+  
+  <!-- Translation Card -->
+  <rect x="24" y="228" width="327" height="380" rx="20" fill="#FFFFFF" filter="drop-shadow(0 4px 16px rgba(0,0,0,0.1))"/>
+  
+  <!-- Card Content -->
+  <rect x="44" y="248" width="287" height="340" fill="#FFFFFF"/>
+  
+  <!-- English Prompt -->
+  <rect x="60" y="268" width="255" height="60" fill="#FFF8E7" rx="12" stroke="#FF9500" stroke-width="1"/>
+  <text x="187" y="292" font-family="SF Pro Text" font-size="18" font-weight="500" fill="#1D1D1F" text-anchor="middle">Hello, how are you?</text>
+  <text x="187" y="312" font-family="SF Pro Text" font-size="14" font-weight="400" fill="#8E8E93" text-anchor="middle">Translate to Japanese</text>
+  
+  <!-- Input Field -->
+  <rect x="60" y="348" width="255" height="100" rx="12" fill="#F8F9FA" stroke="#E5E5E7" stroke-width="1"/>
+  <text x="72" y="372" font-family="SF Pro Text" font-size="14" font-weight="400" fill="#8E8E93">Your translation:</text>
+  
+  <!-- User Input (Hiragana/Kanji) -->
+  <text x="72" y="400" font-family="Hiragino Sans" font-size="20" font-weight="500" fill="#1D1D1F">こんにちは、げんき</text>
+  
+  <!-- Cursor Blink Animation -->
+  <line x1="256" y1="384" x2="256" y2="408" stroke="#007AFF" stroke-width="2">
+    <animate attributeName="opacity" values="1;0;1" dur="1s" repeatCount="indefinite"/>
+  </line>
+  
+  <!-- Keyboard Toggle -->
+  <rect x="240" y="416" width="60" height="24" rx="12" fill="#F2F2F7"/>
+  <text x="270" y="430" font-family="SF Pro Text" font-size="11" font-weight="500" fill="#007AFF" text-anchor="middle">あA漢</text>
+  
+  <!-- Check Answer Button -->
+  <rect x="60" y="468" width="255" height="44" rx="22" fill="#FF9500"/>
+  <text x="187" y="494" font-family="SF Pro Text" font-size="16" font-weight="600" fill="#FFFFFF" text-anchor="middle">Check Answer</text>
+  
+  <!-- Practice Action Buttons -->
+  <rect x="44" y="540" width="287" height="48" fill="#FFFFFF"/>
+  
+  <!-- Skip Button -->
+  <circle cx="96" cy="564" r="24" fill="#E5E5E7"/>
+  <path d="M88 556 L88 572 L96 564 Z" fill="#8E8E93"/>
+  <path d="M96 556 L96 572 L104 564 Z" fill="#8E8E93"/>
+  
+  <!-- Hint Button -->
+  <circle cx="187" cy="564" r="24" fill="#FF9500"/>
+  <text x="187" y="572" font-family="SF Pro Text" font-size="16" font-weight="600" fill="#FFFFFF" text-anchor="middle">?</text>
+  
+  <!-- Speak Button -->
+  <circle cx="278" cy="564" r="24" fill="#34C759"/>
+  <circle cx="270" cy="564" r="3" fill="#FFFFFF"/>
+  <path d="M276 556 L276 572 M280 552 Q288 564 280 576" stroke="#FFFFFF" stroke-width="2" fill="none"/>
+  
+  <!-- Configuration Panel (Bottom) -->
+  <rect y="628" width="375" height="184" fill="#FFFFFF"/>
+  <line x1="0" y1="628" x2="375" y2="628" stroke="#E5E5E7" stroke-width="1"/>
+  
+  <!-- Settings Header -->
+  <rect x="167" y="636" width="40" height="4" rx="2" fill="#C6C6C8"/>
+  
+  <!-- Reverse Mode Toggle (Active) -->
+  <rect x="24" y="656" width="327" height="52" rx="16" fill="#FFF8E7" stroke="#FF9500" stroke-width="1"/>
+  <rect x="36" y="668" width="32" height="28" rx="14" fill="#FF9500"/>
+  <path d="M44 676 L52 682 L44 688" stroke="#FFFFFF" stroke-width="2" fill="none"/>
+  <path d="M60 688 L52 682 L60 676" stroke="#FFFFFF" stroke-width="2" fill="none"/>
+  <text x="80" y="686" font-family="SF Pro Text" font-size="16" font-weight="600" fill="#1D1D1F">Reverse Translation Mode</text>
+  
+  <!-- Toggle Switch (Active) -->
+  <rect x="287" y="674" width="52" height="28" rx="14" fill="#FF9500"/>
+  <circle cx="325" cy="688" r="12" fill="#FFFFFF"/>
+  
+  <!-- Display Options (Disabled in Reverse Mode) -->
+  <text x="24" y="732" font-family="SF Pro Text" font-size="15" font-weight="600" fill="#8E8E93">Display Options (Disabled in Reverse Mode)</text>
+  
+  <!-- Option Pills (All Disabled) -->
+  <rect x="24" y="744" width="80" height="36" rx="18" fill="#F2F2F7"/>
+  <circle cx="42" cy="762" r="8" stroke="#C6C6C8" stroke-width="2" fill="#FFFFFF"/>
+  <text x="58" y="766" font-family="SF Pro Text" font-size="14" font-weight="500" fill="#C6C6C8">Japanese</text>
+  
+  <rect x="116" y="744" width="68" height="36" rx="18" fill="#F2F2F7"/>
+  <circle cx="134" cy="762" r="8" stroke="#C6C6C8" stroke-width="2" fill="#FFFFFF"/>
+  <text x="150" y="766" font-family="SF Pro Text" font-size="14" font-weight="500" fill="#C6C6C8">Romaji</text>
+  
+  <rect x="196" y="744" width="60" height="36" rx="18" fill="#F2F2F7"/>
+  <circle cx="214" cy="762" r="8" stroke="#C6C6C8" stroke-width="2" fill="#FFFFFF"/>
+  <text x="230" y="766" font-family="SF Pro Text" font-size="14" font-weight="500" fill="#C6C6C8">Audio</text>
+  
+  <rect x="268" y="744" width="83" height="36" rx="18" fill="#F2F2F7"/>
+  <circle cx="286" cy="762" r="8" stroke="#C6C6C8" stroke-width="2" fill="#FFFFFF"/>
+  <text x="302" y="766" font-family="SF Pro Text" font-size="14" font-weight="500" fill="#C6C6C8">Auto Play</text>
+  
+  <!-- Japanese Input Method Indicator -->
+  <rect x="24" y="788" width="100" height="20" rx="10" fill="#FF9500"/>
+  <text x="74" y="800" font-family="SF Pro Text" font-size="12" font-weight="500" fill="#FFFFFF" text-anchor="middle">ひらがな</text>
+</svg>
